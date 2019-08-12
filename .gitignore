@@ -9,7 +9,7 @@
 /coverage
 
 # production
-#/build
+/build
 
 # misc
 .DS_Store
@@ -23,3 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .DS_Store
+
+*.tar.gz
