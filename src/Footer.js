@@ -50,45 +50,47 @@ const UI = {
 }
 
 class Footer extends Component {
-  render() {
+  render () {
     const year = moment().year()
 
     return (
-        <UI.Footer id="footer">
-          <MaxWidthContainer>
-            <UI.Container>
-              <UI.Copyright>
-                © {year} <a href="/"><img
+      <UI.Footer id='footer'>
+        <MaxWidthContainer>
+          <UI.Container>
+            <UI.Copyright>
+              © {year} <a href='/'>
+                <img
                   style={{
                     width: '100px',
                     marginLeft: '0.4em'
                   }}
-                  src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu-gry_400.png"
-                  alt="Streamhut" /></a>
-              </UI.Copyright>
-              <UI.Social>
-                <a
-                  href="https://github.com/miguelmota/streamhut"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Github @streamhut">
-                  <GithubCircle />
+                  src='https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu-gry_400.png'
+                  alt='Streamhut' />
+              </a>
+            </UI.Copyright>
+            <UI.Social>
+              <a
+                href='https://github.com/miguelmota/streamhut'
+                target='_blank'
+                rel='noopener noreferrer'
+                title='Github @streamhut'>
+                <GithubCircle />
                   Github
-                </a>
-                <a
-                  href="https://twitter.com/streamhut"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Twitter @streamhut">
-                  <Twitter />
+              </a>
+              <a
+                href='https://twitter.com/streamhut'
+                target='_blank'
+                rel='noopener noreferrer'
+                title='Twitter @streamhut'>
+                <Twitter />
                   Twitter
-                </a>
-              </UI.Social>
-            </UI.Container>
-          </MaxWidthContainer>
-        </UI.Footer>
+              </a>
+            </UI.Social>
+          </UI.Container>
+        </MaxWidthContainer>
+      </UI.Footer>
     )
   }
 }
 
-export default Footer;
+export default Footer

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Chip from '@material-ui/core/Chip';
+import Chip from '@material-ui/core/Chip'
 
 class Tag extends Component {
-  render() {
+  render () {
     return (
       <Chip
         label={this.props.text}

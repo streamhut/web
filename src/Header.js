@@ -167,7 +167,7 @@ const UI = {
 }
 
 class Header extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -181,186 +181,183 @@ class Header extends Component {
     this.copyHelpText = React.createRef()
   }
 
-  componentDidMount() {
+  componentDidMount () {
     new ClipboardJS(this.shareUrl.current, {
       text: trigger => {
         return this.shareUrl.current.value
-      },
+      }
     })
-    .on('success', () => {
-      const target = this.copyHelpText.current
-      const text = target.textContent
-      target.textContent = 'copied!'
+      .on('success', () => {
+        const target = this.copyHelpText.current
+        const text = target.textContent
+        target.textContent = 'copied!'
 
-      setTimeout(function() {
-        target.textContent = text
-      }, 3e3)
-    })
+        setTimeout(function () {
+          target.textContent = text
+        }, 3e3)
+      })
   }
 
-  shareUrlHandler(event) {
+  shareUrlHandler (event) {
     event.currentTarget.select()
   }
 
-  selectCode(event) {
+  selectCode (event) {
     window.getSelection().selectAllChildren(event.currentTarget)
   }
 
-  toggleExampleWithChannel(event) {
+  toggleExampleWithChannel (event) {
     event.preventDefault(event)
     this.setState({
       showExampleWithChannel: !this.state.showExampleWithChannel
     })
   }
 
-  render() {
+  render () {
     return (
-        <UI.Header id="header">
-          <MaxWidthContainer>
-            <UI.HeaderGroup>
-              <UI.Title>
-                <a
-                  href="/"
-                  title="Home">
-                    <img
-                    style={{
-                      width: '150px',
-                      height: 'auto'
-                    }}
-                    src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu_blk_400.png"
-                    alt="Streamhut" />
-                  </a>
-
-                  <Tooltip
-                    className="tooltip"
-                    title={
-                      <React.Fragment>
-                        <div>
-                          <ul>
-                            <li>Stream your terminal to anyone without installing anything.</li>
-                            <li>Quickly share data and files between devices.</li>
-                            <li>URL path names map to channels.</li>
-                            <li>Anyone in the same channel can view what's streamed.</li>
-                          </ul>
-                        </div>
-                      </React.Fragment>
-                    }
-                  >
-                    <div style={{
-                      fontSize: '0.3em'
-                    }}>What is this?</div>
-                  </Tooltip>
-
-              </UI.Title>
-              <UI.Channel>
-                <label>Channel URL
-                  <HelpTooltip
-                    text="Share this URL with others to join and see your stream and messages"
-                    iconStyle={{
-                      fontSize: '0.8em',
-                      marginLeft: '0.2em'
-                    }} />
-                  <small
-                    ref={this.copyHelpText}
-                  >click to copy</small>
-                </label>
-                <UI.ShareUrlInput
+      <UI.Header id='header'>
+        <MaxWidthContainer>
+          <UI.HeaderGroup>
+            <UI.Title>
+              <a
+                href='/'
+                title='Home'>
+                <img
                   style={{
-                    borderRadius: '2px',
-                    padding: '0.5em',
-                    border: '1px solid #e0e0e0'
+                    width: '150px',
+                    height: 'auto'
                   }}
-                  type="text"
-                  placeholder="share url"
-                  readOnly
-                  ref={this.shareUrl}
-                  value={this.props.shareUrl}
-                  onClick={event => this.shareUrlHandler(event)}/>
-                <Clipboard
-                  clipboardText={this.props.shareUrl} />
-              </UI.Channel>
+                  src='https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu_blk_400.png'
+                  alt='Streamhut' />
+              </a>
 
-              <UI.Examples>
-                <div>
+              <Tooltip
+                className='tooltip'
+                title={
+                  <React.Fragment>
+                    <div>
+                      <ul>
+                        <li>Stream your terminal to anyone without installing anything.</li>
+                        <li>Quickly share data and files between devices.</li>
+                        <li>URL path names map to channels.</li>
+                        <li>Anyone in the same channel can view what's streamed.</li>
+                      </ul>
+                    </div>
+                  </React.Fragment>
+                }
+              >
+                <div style={{
+                  fontSize: '0.3em'
+                }}>What is this?</div>
+              </Tooltip>
+
+            </UI.Title>
+            <UI.Channel>
+              <label>Channel URL
+                <HelpTooltip
+                  text='Share this URL with others to join and see your stream and messages'
+                  iconStyle={{
+                    fontSize: '0.8em',
+                    marginLeft: '0.2em'
+                  }} />
+                <small
+                  ref={this.copyHelpText}
+                >click to copy</small>
+              </label>
+              <UI.ShareUrlInput
+                style={{
+                  borderRadius: '2px',
+                  padding: '0.5em',
+                  border: '1px solid #e0e0e0'
+                }}
+                type='text'
+                placeholder='share url'
+                readOnly
+                ref={this.shareUrl}
+                value={this.props.shareUrl}
+                onClick={event => this.shareUrlHandler(event)} />
+              <Clipboard
+                clipboardText={this.props.shareUrl} />
+            </UI.Channel>
+
+            <UI.Examples>
+              <div>
 
                 <details className={this.state.showExampleWithChannel ? 'random' : ''}>
                   <summary>
                     <span>CLI examples</span>
                     <div>
                       <button
-                        className="link"
+                        className='link'
                         onClick={event => this.toggleExampleWithChannel(event)}>
                         {this.state.showExampleWithChannel ? 'using random channel' : 'using specific channel'}
                       </button>
                     </div>
-                    </summary>
+                  </summary>
                   <UI.UL>
                     <UI.LI>
                       <label>Tail:</label>
-                      {this.state.showExampleWithChannel ?
-                        <code
+                      {this.state.showExampleWithChannel
+                        ? <code
                           onClick={event => this.selectCode(event)}
                         >nc {this.state.hostname} {this.state.port} &lt; &lt;(echo \#{this.state.channel}; tail -F data.log)</code>
-                      :
-                      <code
-                        onClick={event => this.selectCode(event)}
-                      >tail -F file.log | nc {this.state.hostname} {this.state.port}</code>}
+                        : <code
+                          onClick={event => this.selectCode(event)}
+                        >tail -F file.log | nc {this.state.hostname} {this.state.port}</code>}
                     </UI.LI>
                     <UI.LI>
                       <label>Tee</label>
-                      {this.state.showExampleWithChannel ?
-                      <code
-                        onClick={event => this.selectCode(event)}
-                      >(echo \#{this.state.channel}; htop) | tee >(nc {this.state.hostname} {this.state.port})</code>
-                      :
-                      <code
-                        onClick={event => this.selectCode(event)}
-                      >(sleep 5; htop) | tee >(nc {this.state.hostname} {this.state.port})</code>}
+                      {this.state.showExampleWithChannel
+                        ? <code
+                          onClick={event => this.selectCode(event)}
+                        >(echo \#{this.state.channel}; htop) | tee >(nc {this.state.hostname} {this.state.port})</code>
+                        : <code
+                          onClick={event => this.selectCode(event)}
+                        >(sleep 5; htop) | tee >(nc {this.state.hostname} {this.state.port})</code>}
                     </UI.LI>
                     <UI.LI>
                       <label>Pipe shell:</label>
-                      {this.state.showExampleWithChannel ?
-                      <code
-                        onClick={event => this.selectCode(event)}
-                      >exec > >(nc {this.state.hostname} {this.state.port}) 2>&1;echo \#{this.state.channel}</code>
-                      :
-                      <code
-                        onClick={event => this.selectCode(event)}
-                      >exec > >(nc {this.state.hostname} {this.state.port}) 2>&1</code>}
+                      {this.state.showExampleWithChannel
+                        ? <code
+                          onClick={event => this.selectCode(event)}
+                        >exec > >(nc {this.state.hostname} {this.state.port}) 2>&1;echo \#{this.state.channel}</code>
+                        : <code
+                          onClick={event => this.selectCode(event)}
+                        >exec > >(nc {this.state.hostname} {this.state.port}) 2>&1</code>}
                     </UI.LI>
                     {/*
                     <UI.LI>Echo: <code>$ echo 'foo' | streamhut post -h streamhut.io -c mychannel</code></UI.LI>
                     <UI.LI>File: <code>$ streamhut post -h streamhut.io -c mychannel -f data.txt</code></UI.LI>
                     */}
                   </UI.UL>
-                  </details>
-                  <div>
-                    <a href="https://github.com/miguelmota/streamhut"
-                      target="_blank"
-                      rel="noopener noreferrer">Developer documentation</a>
-                    <span> | </span>
-                    <a
-                      href="https://github.com/miguelmota/streamhut/issues/1"
-                      target="_blank"
-                      rel="noopener noreferrer">Feedback</a>
-                  </div>
+                </details>
+                <div>
+                  <a href='https://github.com/miguelmota/streamhut'
+                    target='_blank'
+                    rel='noopener noreferrer'>Developer documentation</a>
+                  <span> | </span>
+                  <a
+                    href='https://github.com/miguelmota/streamhut/issues/1'
+                    target='_blank'
+                    rel='noopener noreferrer'>Feedback</a>
                 </div>
-              </UI.Examples>
-            </UI.HeaderGroup>
+              </div>
+            </UI.Examples>
+          </UI.HeaderGroup>
+        </MaxWidthContainer>
+        <UI.Notice>
+          <MaxWidthContainer>
+            <strong>Notice:</strong> streamhut is alpha quality and storage might be reset. Use at your risk. <a
+              href='/#subscribe'
+              target='_blank'
+              rel='noopener noreferrer'
+              title='subscribe'
+            >Subscribe</a> to get news and updates.
           </MaxWidthContainer>
-          <UI.Notice>
-            <MaxWidthContainer>
-              <strong>Notice:</strong> streamhut is alpha quality and storage might be reset. Use at your risk. <a
-                href="/#subscribe"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="subscribe"
-              >Subscribe</a> to get news and updates.
-            </MaxWidthContainer>
-          </UI.Notice>
-        </UI.Header>
+        </UI.Notice>
+      </UI.Header>
     )
   }
 }
 
-export default Header;
+export default Header

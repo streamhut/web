@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 
 class SidePanel extends Component {
-  render() {
+  render () {
     return (
-      <div>
-      </div>
+      <div />
     )
   }
 }

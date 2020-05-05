@@ -295,7 +295,7 @@ const UI = {
 }
 
 class Home extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       hostname: window.location.hostname,
@@ -303,114 +303,113 @@ class Home extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
-        <UI.Main id="site-container">
-          <UI.Hero id="home">
-            <UI.HeroImage>
-              <h1>
-                <img src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu_blk.png" alt="Streamhut" />
-              </h1>
-            </UI.HeroImage>
-            <UI.Tagline>
+      <UI.Main id='site-container'>
+        <UI.Hero id='home'>
+          <UI.HeroImage>
+            <h1>
+              <img src='https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu_blk.png' alt='Streamhut' />
+            </h1>
+          </UI.HeroImage>
+          <UI.Tagline>
               stream your terminal
-            </UI.Tagline>
-            <UI.SubTagline>
+          </UI.Tagline>
+          <UI.SubTagline>
             Share your terminal in real-time with anyone — without installing anything
-            </UI.SubTagline>
-          </UI.Hero>
-          <UI.Example id="example">
-            <p>
+          </UI.SubTagline>
+        </UI.Hero>
+        <UI.Example id='example'>
+          <p>
               To get started, run in your terminal:
-            </p>
-            <div>
-              <pre>
-                exec > >(nc {this.state.hostname} {this.state.port}) 2>&amp;1
-              </pre>
-            </div>
-            <small>
-            The command pipes the output of the shell to streamhut and provides a url to share
-            </small>
-          </UI.Example>
-          <UI.Example2 id="example2">
-            <p>
-              Don't have netcat installed? No problem
-            </p>
-            <small>
-              Pipe to a file descriptor with an open TCP connection
-            </small>
-            <div>
-              <pre>
-                exec 3&lt;&gt;/dev/tcp/{this.state.hostname}/{this.state.port} &amp;&amp; head -1 &lt;&amp;3 &amp;&amp; exec &amp;&gt; &gt;(tee >(cat &gt;&amp;3))
-              </pre>
-            </div>
+          </p>
+          <div>
             <pre>
+                exec > >(nc {this.state.hostname} {this.state.port}) 2>&amp;1
             </pre>
-          </UI.Example2>
-          <UI.Cast>
+          </div>
+          <small>
+            The command pipes the output of the shell to streamhut and provides a url to share
+          </small>
+        </UI.Example>
+        <UI.Example2 id='example2'>
+          <p>
+              Don't have netcat installed? No problem
+          </p>
+          <small>
+              Pipe to a file descriptor with an open TCP connection
+          </small>
+          <div>
+            <pre>
+                exec 3&lt;&gt;/dev/tcp/{this.state.hostname}/{this.state.port} &amp;&amp; head -1 &lt;&amp;3 &amp;&amp; exec &amp;&gt; &gt;(tee >(cat &gt;&amp;3))
+            </pre>
+          </div>
+          <pre />
+        </UI.Example2>
+        <UI.Cast>
+          <div>
+            <p>streamhut in action:</p>
+          </div>
+          <div>
             <div>
-              <p>streamhut in action:</p>
+              <img
+                src='https://s3.amazonaws.com/assets.streamhut.io/streamhut_demo_1.gif'
+                alt='screencast' />
             </div>
-            <div>
-              <div>
-                <img
-                  src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_demo_1.gif"
-              alt="screencast" />
-              </div>
-            </div>
-          </UI.Cast>
-          <UI.UseCases id="use-cases">
-            <div>
-              <p>Use cases for streamhut:</p>
-              <ul>
-                <li>Debug logs withs colleagues</li>
-                <li>Help a friend with programming</li>
-                <li>Live terminal sessions for interviews</li>
-              </ul>
-            </div>
+          </div>
+        </UI.Cast>
+        <UI.UseCases id='use-cases'>
+          <div>
+            <p>Use cases for streamhut:</p>
+            <ul>
+              <li>Debug logs withs colleagues</li>
+              <li>Help a friend with programming</li>
+              <li>Live terminal sessions for interviews</li>
+            </ul>
+          </div>
 
-            <small>
-              <p>As well as:</p>
-              <ul>
-                <li>Pseudo-anonymous communication</li>
-                <li>Transfer content and files between devices</li>
-              </ul>
-            </small>
-          </UI.UseCases>
-          <UI.SelfHost id="self-host">
-            <p>Self-hosted option? Absolutely</p>
-            <small>
+          <small>
+            <p>As well as:</p>
+            <ul>
+              <li>Pseudo-anonymous communication</li>
+              <li>Transfer content and files between devices</li>
+            </ul>
+          </small>
+        </UI.UseCases>
+        <UI.SelfHost id='self-host'>
+          <p>Self-hosted option? Absolutely</p>
+          <small>
               Run streamhut as a Docker container
-            </small>
-            <div>
-              <pre>
+          </small>
+          <div>
+            <pre>
                 docker run -p 8080:8080 -p 1337:1337 streamhut/streamhut
-              </pre>
-            </div>
-          </UI.SelfHost>
-          <UI.Repo id="github">
-            <div><Heart style={{color: '#f95d5d'}}/> Open Source</div>
-            <small>streamhut source code is available on github</small>
-            <div>
-                <a
-                  className="link"
-                  href="https://github.com/streamhut/streamhut"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Github @streamhut">
-                <GithubCircle/> Github</a>
-            </div>
-          </UI.Repo>
-          <UI.Subscribe id="subscribe">
-            <p>Join the mailing list</p>
-            <small>Subscribe to get notified of latest updates on news and features</small>
-            <SubscribeForm />
-          </UI.Subscribe>
-          <MaxWidthContainer>
-            <UI.Container>
-            </UI.Container>
-          </MaxWidthContainer>
-        </UI.Main>
+            </pre>
+          </div>
+        </UI.SelfHost>
+        <UI.Repo id='github'>
+          <div><Heart style={{color: '#f95d5d'}} /> Open Source</div>
+          <small>streamhut source code is available on github</small>
+          <div>
+            <a
+              className='link'
+              href='https://github.com/streamhut/streamhut'
+              target='_blank'
+              rel='noopener noreferrer'
+              title='Github @streamhut'>
+              <GithubCircle /> Github</a>
+          </div>
+        </UI.Repo>
+        <UI.Subscribe id='subscribe'>
+          <p>Join the mailing list</p>
+          <small>Subscribe to get notified of latest updates on news and features</small>
+          <SubscribeForm />
+        </UI.Subscribe>
+        <MaxWidthContainer>
+          <UI.Container>
+          </UI.Container>
+        </MaxWidthContainer>
+      </UI.Main>
     )
   }
 }

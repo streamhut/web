@@ -10,11 +10,11 @@ const UI = {
 }
 
 class MaxWidthContainer extends Component {
-  render() {
+  render () {
     return (
-        <UI.Container>
-          {this.props.children}
-        </UI.Container>
+      <UI.Container>
+        {this.props.children}
+      </UI.Container>
     )
   }
 }

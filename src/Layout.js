@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import Footer from './Footer'
 
 class Layout extends Component {
-  render() {
+  render () {
     return (
-        [
-          this.props.children,
-          <Footer key="footer" />
-        ]
+      [
+        this.props.children,
+        <Footer key='footer' />
+      ]
     )
   }
 }
 
-export default Layout;
+export default Layout

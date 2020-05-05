@@ -2,24 +2,24 @@ import React, { Component } from 'react'
 import ClipboardJS from 'react-clipboard.js'
 
 class Clipboard extends Component {
-  onClipboardCopy(event) {
+  onClipboardCopy (event) {
     const target = event.trigger
     target.textContent = 'copied!'
     target.classList.add('copied')
 
-    setTimeout(function() {
+    setTimeout(function () {
       target.textContent = 'copy'
       target.classList.remove('copied')
     }, 3e3)
   }
 
-  render() {
+  render () {
     return (
       <ClipboardJS
         className={this.props.className || 'copy'}
         style={this.props.style}
         id={this.props.id}
-        title="Copy to clipboard"
+        title='Copy to clipboard'
         data-clipboard-text={this.props.clipboardText}
         onSuccess={event => this.onClipboardCopy(event)}>
         copy
@@ -28,4 +28,4 @@ class Clipboard extends Component {
   }
 }
 
-export default Clipboard;
+export default Clipboard

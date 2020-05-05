@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 class DragAndDrop extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       drag: false
@@ -10,24 +10,24 @@ class DragAndDrop extends Component {
     this.dragCounter = 0
   }
 
-  handleDrag(event) {
+  handleDrag (event) {
     event.preventDefault()
     event.stopPropagation()
   }
 
-  handleDragIn(event) {
+  handleDragIn (event) {
     event.preventDefault()
     event.stopPropagation()
 
     this.dragCounter++
 
-      if (event.dataTransfer.items &&
+    if (event.dataTransfer.items &&
       event.dataTransfer.items.length > 0) {
-        this.setState({drag: true})
-      }
+      this.setState({drag: true})
+    }
   }
 
-  handleDragOut(event) {
+  handleDragOut (event) {
     event.preventDefault()
     event.stopPropagation()
 
@@ -38,7 +38,7 @@ class DragAndDrop extends Component {
     }
   }
 
-  handleDrop(event) {
+  handleDrop (event) {
     event.preventDefault()
     event.stopPropagation()
 
@@ -52,7 +52,7 @@ class DragAndDrop extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     let el = document.body
     el.addEventListener('dragenter', event => this.handleDragIn(event))
     el.addEventListener('dragleave', event => this.handleDragOut(event))
@@ -60,7 +60,7 @@ class DragAndDrop extends Component {
     el.addEventListener('drop', event => this.handleDrop(event))
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     let el = document.body
     el.removeEventListener('dragenter', event => this.handleDragIn(event))
     el.removeEventListener('dragleave', event => this.handleDragOut(event))
@@ -68,9 +68,9 @@ class DragAndDrop extends Component {
     el.removeEventListener('drop', event => this.handleDrop(event))
   }
 
-  render() {
+  render () {
     return (
-        <div>
+      <div>
         {this.state.drag &&
           <div
             style={{

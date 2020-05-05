@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import styled from 'styled-components'
 
 const UI = {
@@ -17,19 +17,19 @@ const UI = {
     a {
       font-weight: 500;
     }
-  `,
+  `
 }
 
 class NotFound extends Component {
-  render() {
+  render () {
     return (
       <UI.Container>
         <h3>Not found</h3>
         <div>
-          <a class="link" href="/">Go Home ›</a>
+          <a class='link' href='/'>Go Home ›</a>
         </div>
       </UI.Container>
-    );
+    )
   }
 }
 

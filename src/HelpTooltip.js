@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import Tooltip from '@material-ui/core/Tooltip'
 
 class HelpTooltip extends Component {
-  render() {
+  render () {
     return (
       <Tooltip
-        className="help-tooltip"
+        className='help-tooltip'
         title={this.props.text}
         aria-label={this.props.text}>
         <span style={this.props.iconStyle}>?</span>
@@ -14,4 +14,4 @@ class HelpTooltip extends Component {
   }
 }
 
-export default HelpTooltip;
+export default HelpTooltip
