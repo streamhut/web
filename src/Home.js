@@ -380,16 +380,11 @@ class Home extends Component {
           <UI.SelfHost id="self-host">
             <p>Self-hosted option? Absolutely</p>
             <small>
-              Install the streamhut NPM module to run the server
+              Run streamhut as a Docker container
             </small>
             <div>
               <pre>
-                npm install -g streamhut
-              </pre>
-            </div>
-            <div>
-              <pre>
-                streamhut server
+                docker run -p 8080:8080 -p 1337:1337 streamhut/streamhut
               </pre>
             </div>
           </UI.SelfHost>
@@ -399,7 +394,7 @@ class Home extends Component {
             <div>
                 <a
                   className="link"
-                  href="https://github.com/miguelmota/streamhut"
+                  href="https://github.com/streamhut/streamhut"
                   target="_blank"
                   rel="noopener noreferrer"
                   title="Github @streamhut">

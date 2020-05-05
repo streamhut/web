@@ -76,7 +76,7 @@ class Footer extends Component {
                   Github
                 </a>
                 <a
-                  href="https://twitter.com/miguelmotah"
+                  href="https://twitter.com/streamhut"
                   target="_blank"
                   rel="noopener noreferrer"
                   title="Twitter @streamhut">
