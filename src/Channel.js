@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import hyperlinkify from 'hyperlinkify'
 import {
   arrayBufferWithMime,
   arrayBufferMimeDecouple
@@ -441,6 +440,11 @@ class Channel extends Component {
       cursorBlink: true,
       drawBoldTextInBrightColors: true
     })
+
+    this.term.setOption('theme', {
+      fontFamily: '"Source Code Pro, Menlo, Monaco, Consolas, "Courier New", monospace'
+    })
+
     let termNode = this.terminalRef.current
     termNode.style.display = 'block'
     this.term.open(termNode, false)
@@ -808,11 +812,9 @@ class Channel extends Component {
           <img src={url} alt='' />
         </div>
       } else {
-        let linked = hyperlinkify(t, {target: '_blank', rel: `noopener noreferrer`})
-        clipboardText = linked
+        clipboardText = t
 
-        element = <code
-          dangerouslySetInnerHTML={{__html: linked}} />
+        element = <code>{t}</code>
       }
     }
 

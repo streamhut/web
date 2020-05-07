@@ -42,8 +42,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: "Source Code Pro", Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 #site-container {
