@@ -1,6 +1,16 @@
 import React, { Component } from 'react'
 
-class DragAndDrop extends Component {
+interface Props {
+  handleDrop: any
+}
+
+interface State {
+  drag: boolean
+}
+
+class DragAndDrop extends Component<Props, State> {
+  dragCounter: number
+
   constructor (props) {
     super(props)
     this.state = {
@@ -23,7 +33,7 @@ class DragAndDrop extends Component {
 
     if (event.dataTransfer.items &&
       event.dataTransfer.items.length > 0) {
-      this.setState({drag: true})
+      this.setState({ drag: true })
     }
   }
 
@@ -34,7 +44,7 @@ class DragAndDrop extends Component {
     this.dragCounter--
 
     if (this.dragCounter === 0) {
-      this.setState({drag: false})
+      this.setState({ drag: false })
     }
   }
 
@@ -42,7 +52,7 @@ class DragAndDrop extends Component {
     event.preventDefault()
     event.stopPropagation()
 
-    this.setState({drag: false})
+    this.setState({ drag: false })
 
     if (event.dataTransfer.files &&
     event.dataTransfer.files.length > 0) {

@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import Clipboard from './Clipboard'
-import HelpTooltip from './HelpTooltip'
 import Tooltip from '@material-ui/core/Tooltip'
-import MaxWidthContainer from './MaxWidthContainer'
 import styled from 'styled-components'
 import ClipboardJS from 'clipboard'
+
+import Clipboard from 'src/components/functional/Clipboard'
+import HelpTooltip from 'src/components/functional/HelpTooltip'
+import MaxWidthContainer from 'src/components/functional/MaxWidthContainer'
 
 const UI = {
   Header: styled.header`
@@ -166,7 +167,21 @@ const UI = {
   `
 }
 
-class Header extends Component {
+interface Props {
+  shareUrl: string
+}
+
+interface State {
+  hostname: string
+  port: number
+  showExampleWithChannel: boolean
+  channel: string
+}
+
+class Header extends Component<Props, State> {
+  shareUrl: any
+  copyHelpText: any
+
   constructor (props) {
     super(props)
 
@@ -198,12 +213,12 @@ class Header extends Component {
       })
   }
 
-  shareUrlHandler (event) {
+  shareUrlHandler (event: any) {
     event.currentTarget.select()
   }
 
-  selectCode (event) {
-    window.getSelection().selectAllChildren(event.currentTarget)
+  selectCode (event: any) {
+    (window as any).getSelection().selectAllChildren(event.currentTarget)
   }
 
   toggleExampleWithChannel (event) {
@@ -215,24 +230,24 @@ class Header extends Component {
 
   render () {
     return (
-      <UI.Header id='header'>
+      <UI.Header id="header">
         <MaxWidthContainer>
           <UI.HeaderGroup>
             <UI.Title>
               <a
-                href='/'
-                title='Home'>
+                href="/"
+                title="Home">
                 <img
                   style={{
                     width: '150px',
                     height: 'auto'
                   }}
-                  src='https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu_blk_400.png'
-                  alt='Streamhut' />
+                  src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu_blk_400.png"
+                  alt="Streamhut" />
               </a>
 
               <Tooltip
-                className='tooltip'
+                className="tooltip"
                 title={
                   <React.Fragment>
                     <div>
@@ -255,7 +270,7 @@ class Header extends Component {
             <UI.Channel>
               <label>Channel URL
                 <HelpTooltip
-                  text='Share this URL with others to join and see your stream and messages'
+                  text="Share this URL with others to join and see your stream and messages"
                   iconStyle={{
                     fontSize: '0.8em',
                     marginLeft: '0.2em'
@@ -270,9 +285,9 @@ class Header extends Component {
                   padding: '0.5em',
                   border: '1px solid #e0e0e0'
                 }}
-                type='text'
-                placeholder='share url'
-                readOnly
+                type="text"
+                placeholder="share url"
+                readOnly={true}
                 ref={this.shareUrl}
                 value={this.props.shareUrl}
                 onClick={event => this.shareUrlHandler(event)} />
@@ -288,7 +303,7 @@ class Header extends Component {
                     <span>CLI examples</span>
                     <div>
                       <button
-                        className='link'
+                        className="link"
                         onClick={event => this.toggleExampleWithChannel(event)}>
                         {this.state.showExampleWithChannel ? 'using random channel' : 'using specific channel'}
                       </button>
@@ -310,20 +325,20 @@ class Header extends Component {
                       {this.state.showExampleWithChannel
                         ? <code
                           onClick={event => this.selectCode(event)}
-                        >(echo \#{this.state.channel}; htop) | tee >(nc {this.state.hostname} {this.state.port})</code>
+                        >(echo \#{this.state.channel}; htop) | tee {'>'}(nc {this.state.hostname} {this.state.port})</code>
                         : <code
                           onClick={event => this.selectCode(event)}
-                        >(sleep 5; htop) | tee >(nc {this.state.hostname} {this.state.port})</code>}
+                        >(sleep 5; htop) | tee {'>'}(nc {this.state.hostname} {this.state.port})</code>}
                     </UI.LI>
                     <UI.LI>
                       <label>Pipe shell:</label>
                       {this.state.showExampleWithChannel
                         ? <code
                           onClick={event => this.selectCode(event)}
-                        >exec > >(nc {this.state.hostname} {this.state.port}) 2>&1;echo \#{this.state.channel}</code>
+                        >exec {'>'} {'>'}(nc {this.state.hostname} {this.state.port}) 2{'>'}&1;echo \#{this.state.channel}</code>
                         : <code
                           onClick={event => this.selectCode(event)}
-                        >exec > >(nc {this.state.hostname} {this.state.port}) 2>&1</code>}
+                        >exec {'>'} {'>'}(nc {this.state.hostname} {this.state.port}) 2{'>'}&1</code>}
                     </UI.LI>
                     {/*
                     <UI.LI>Echo: <code>$ echo 'foo' | streamhut post -h streamhut.io -c mychannel</code></UI.LI>
@@ -332,14 +347,14 @@ class Header extends Component {
                   </UI.UL>
                 </details>
                 <div>
-                  <a href='https://github.com/miguelmota/streamhut'
-                    target='_blank'
-                    rel='noopener noreferrer'>Developer documentation</a>
+                  <a href="https://github.com/miguelmota/streamhut"
+                    target="_blank"
+                    rel="noopener noreferrer">Developer documentation</a>
                   <span> | </span>
                   <a
-                    href='https://github.com/miguelmota/streamhut/issues/1'
-                    target='_blank'
-                    rel='noopener noreferrer'>Feedback</a>
+                    href="https://github.com/miguelmota/streamhut/issues/1"
+                    target="_blank"
+                    rel="noopener noreferrer">Feedback</a>
                 </div>
               </div>
             </UI.Examples>
@@ -348,10 +363,10 @@ class Header extends Component {
         <UI.Notice>
           <MaxWidthContainer>
             <strong>Notice:</strong> streamhut is alpha quality and storage might be reset. Use at your risk. <a
-              href='/#subscribe'
-              target='_blank'
-              rel='noopener noreferrer'
-              title='subscribe'
+              href="/#subscribe"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="subscribe"
             >Subscribe</a> to get news and updates.
           </MaxWidthContainer>
         </UI.Notice>

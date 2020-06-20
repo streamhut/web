@@ -26,7 +26,7 @@ class NotFound extends Component {
       <UI.Container>
         <h3>Not found</h3>
         <div>
-          <a class='link' href='/'>Go Home ›</a>
+          <a className="link" href="/">Go Home ›</a>
         </div>
       </UI.Container>
     )

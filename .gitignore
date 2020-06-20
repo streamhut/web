@@ -28,3 +28,6 @@ yarn-error.log*
 .DS_Store
 
 *.tar.gz
+
+package-lock.json
+yarn.lock

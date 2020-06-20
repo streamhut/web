@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import MaxWidthContainer from './MaxWidthContainer'
 import styled from 'styled-components'
 import { GithubCircle, Heart } from 'mdi-material-ui'
+import MaxWidthContainer from 'src/components/functional/MaxWidthContainer'
 import SubscribeForm from './SubscribeForm'
 
 const UI = {
@@ -294,7 +294,15 @@ const UI = {
   `
 }
 
-class Home extends Component {
+interface Props {
+}
+
+interface State {
+  hostname: string
+  port: number
+}
+
+class Home extends Component<Props, State> {
   constructor (props) {
     super(props)
     this.state = {
@@ -305,11 +313,11 @@ class Home extends Component {
 
   render () {
     return (
-      <UI.Main id='site-container'>
-        <UI.Hero id='home'>
+      <UI.Main id="site-container">
+        <UI.Hero id="home">
           <UI.HeroImage>
             <h1>
-              <img src='https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu_blk.png' alt='Streamhut' />
+              <img src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu_blk.png" alt="Streamhut" />
             </h1>
           </UI.HeroImage>
           <UI.Tagline>
@@ -319,20 +327,20 @@ class Home extends Component {
             Share your terminal in real-time with anyone — without installing anything
           </UI.SubTagline>
         </UI.Hero>
-        <UI.Example id='example'>
+        <UI.Example id="example">
           <p>
               To get started, run in your terminal:
           </p>
           <div>
             <pre>
-                exec > >(nc {this.state.hostname} {this.state.port}) 2>&amp;1
+                exec {'>'} {'>'}(nc {this.state.hostname} {this.state.port}) 2{'>'}&amp;1
             </pre>
           </div>
           <small>
             The command pipes the output of the shell to streamhut and provides a url to share
           </small>
         </UI.Example>
-        <UI.Example2 id='example2'>
+        <UI.Example2 id="example2">
           <p>
               Don't have netcat installed? No problem
           </p>
@@ -341,7 +349,7 @@ class Home extends Component {
           </small>
           <div>
             <pre>
-                exec 3&lt;&gt;/dev/tcp/{this.state.hostname}/{this.state.port} &amp;&amp; head -1 &lt;&amp;3 &amp;&amp; exec &amp;&gt; &gt;(tee >(cat &gt;&amp;3))
+                exec 3{'<'}{'>'}/dev/tcp/{this.state.hostname}/{this.state.port} &amp;&amp; head -1 &lt;&amp;3 &amp;&amp; exec &amp;&gt; &gt;(tee {'>'}(cat &gt;&amp;3))
             </pre>
           </div>
           <pre />
@@ -353,12 +361,12 @@ class Home extends Component {
           <div>
             <div>
               <img
-                src='https://s3.amazonaws.com/assets.streamhut.io/streamhut_demo_1.gif'
-                alt='screencast' />
+                src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_demo_1.gif"
+                alt="screencast" />
             </div>
           </div>
         </UI.Cast>
-        <UI.UseCases id='use-cases'>
+        <UI.UseCases id="use-cases">
           <div>
             <p>Use cases for streamhut:</p>
             <ul>
@@ -376,7 +384,7 @@ class Home extends Component {
             </ul>
           </small>
         </UI.UseCases>
-        <UI.SelfHost id='self-host'>
+        <UI.SelfHost id="self-host">
           <p>Self-hosted option? Absolutely</p>
           <small>
               Run streamhut as a Docker container
@@ -387,27 +395,26 @@ class Home extends Component {
             </pre>
           </div>
         </UI.SelfHost>
-        <UI.Repo id='github'>
-          <div><Heart style={{color: '#f95d5d'}} /> Open Source</div>
+        <UI.Repo id="github">
+          <div><Heart style={{ color: '#f95d5d' }} /> Open Source</div>
           <small>streamhut source code is available on github</small>
           <div>
             <a
-              className='link'
-              href='https://github.com/streamhut/streamhut'
-              target='_blank'
-              rel='noopener noreferrer'
-              title='Github @streamhut'>
+              className="link"
+              href="https://github.com/streamhut/streamhut"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Github @streamhut">
               <GithubCircle /> Github</a>
           </div>
         </UI.Repo>
-        <UI.Subscribe id='subscribe'>
+        <UI.Subscribe id="subscribe">
           <p>Join the mailing list</p>
           <small>Subscribe to get notified of latest updates on news and features</small>
           <SubscribeForm />
         </UI.Subscribe>
         <MaxWidthContainer>
-          <UI.Container>
-          </UI.Container>
+          <UI.Container/>
         </MaxWidthContainer>
       </UI.Main>
     )

@@ -1,7 +1,17 @@
 import React, { Component } from 'react'
 import ClipboardJS from 'react-clipboard.js'
 
-class Clipboard extends Component {
+interface Props {
+  className?: string
+  style?: any
+  clipboardText: string
+}
+
+interface State {
+
+}
+
+class Clipboard extends Component<Props, State> {
   onClipboardCopy (event) {
     const target = event.trigger
     target.textContent = 'copied!'
@@ -18,8 +28,7 @@ class Clipboard extends Component {
       <ClipboardJS
         className={this.props.className || 'copy'}
         style={this.props.style}
-        id={this.props.id}
-        title='Copy to clipboard'
+        button-title="Copy to clipboard"
         data-clipboard-text={this.props.clipboardText}
         onSuccess={event => this.onClipboardCopy(event)}>
         copy

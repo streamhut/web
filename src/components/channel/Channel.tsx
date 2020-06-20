@@ -5,10 +5,6 @@ import {
 } from 'arraybuffer-mime'
 
 import moment from 'moment'
-import Header from './Header'
-import Clipboard from './Clipboard'
-import DragAndDrop from './DragAndDrop'
-import Tag from './Tag'
 // import randomstring from 'randomstring'
 import styled from 'styled-components'
 import prettysize from 'prettysize'
@@ -19,6 +15,11 @@ import { Terminal } from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import * as fullscreen from 'xterm/lib/addons/fullscreen/fullscreen'
 
+import Header from 'src/components/global/Header'
+import Clipboard from 'src/components/functional/Clipboard'
+import DragAndDrop from 'src/components/functional/DragAndDrop'
+import Tag from 'src/components/functional/Tag'
+
 Terminal.applyAddon(fit)
 Terminal.applyAddon(fullscreen)
 
@@ -27,7 +28,7 @@ const ESC_KEY = 27
 const green = t => `${ansi.greenBright.open}${t}${ansi.greenBright.close}`
 
 function createWs (channel) {
-  const {host, protocol} = window.location
+  const { host, protocol } = window.location
   let wsurl = `${protocol === 'https:' ? `wss` : `ws`}://${host}/ws/s/${channel}`
   // let wsurl = `ws://localhost:3001/ws/s/${channel}`
   const ws = new WebSocket(wsurl)
@@ -284,26 +285,59 @@ const UI = {
   `
 }
 
-class Channel extends Component {
-  constructor (props) {
+interface Props {
+}
+
+interface State {
+  text: string
+  file: any
+  messages: any[]
+  shareUrl: string
+  fullScreen: boolean
+  queuedFiles: any[]
+  fullScreenUrl: string
+  terminalBlurred: boolean
+  channel: string
+  terminalScrollable: boolean
+  hostname: string
+  terminalPressedKey: any
+}
+
+class Channel extends Component<Props, State> {
+  lineNumber: number
+  output: any
+  fileInput: any
+  terminalRef: any
+  terminalContainerRef: any
+  terminalResizerRef: any
+  term: any
+  lastHeight: any
+  borderSize: any
+  termScrollArea: any
+  ws: any
+  lastKeyPress: any
+  lastKeyTimeout: any
+  pos: any
+
+  constructor (props: Props) {
     super(props)
 
-    this.state = {
+    const channel = window.location.pathname.substr(3)
+
+    const state = {
       text: '',
       file: null,
       messages: [],
-      shareUrl: null,
+      shareUrl: this.getShareUrl(channel),
       fullScreen: false,
       queuedFiles: [],
       fullScreenUrl: '',
       terminalBlurred: true,
-      channel: window.location.pathname.substr(3),
+      channel,
       terminalScrollable: false,
       hostname: window.location.hostname,
       terminalPressedKey: null
     }
-
-    this.state.shareUrl = this.getShareUrl()
 
     const urlParams = getUrlParams()
     if ('f' in urlParams) {
@@ -315,7 +349,8 @@ class Channel extends Component {
 
     this.lineNumber = 0
 
-    this.state.fullscreenUrl = `${p}${q}${q.length ? '&' : '?'}f=1`
+    state.fullScreenUrl = `${p}${q}${q.length ? '&' : '?'}f=1`
+    this.state = state
 
     this.output = React.createRef()
     this.fileInput = React.createRef()
@@ -324,13 +359,13 @@ class Channel extends Component {
     this.terminalResizerRef = React.createRef()
   }
 
-  getShareUrl () {
+  getShareUrl (channel: string) {
     let protocol = window.location.protocol
     let host = window.location.host
-    let pathname = `s/${this.state.channel}`
+    let pathname = `s/${channel}`
     if (host === 'streamhut.io') {
       host = 'stream.ht'
-      pathname = this.state.channel
+      pathname = channel
     }
 
     return `${protocol}//${host}/${pathname}`
@@ -373,7 +408,7 @@ class Channel extends Component {
     const { text } = this.state
     if (text) {
       const mime = 'text/plain'
-      const blob = new Blob([text], {type: mime})
+      const blob = new Blob([text], { type: mime })
       const reader = new FileReader()
 
       reader.addEventListener('load', (event) => {
@@ -382,7 +417,7 @@ class Channel extends Component {
       })
 
       reader.readAsArrayBuffer(blob)
-      this.setState({text: ''})
+      this.setState({ text: '' })
     }
   }
 
@@ -490,7 +525,6 @@ class Channel extends Component {
       console.log(`connection closed`)
     })
 
-    window.term = this.term
     this.lastKeyPress = null
     this.lastKeyTimeout = null
     window.addEventListener('keydown', throttle(event => {
@@ -509,7 +543,7 @@ class Channel extends Component {
           terminalPressedKey: null
         })
       }, 1800)
-    }, true), 10)
+    }, 10), true)
 
     this.termScrollArea.addEventListener('scroll', throttle(event => {
       if (this.state.terminalScrollable) {
@@ -598,7 +632,7 @@ class Channel extends Component {
   }
 
   terminalScrollPageMiddle () {
-    this.term.scrollToLine(parseInt(this.term.rows / 2, 10))
+    this.term.scrollToLine(parseInt(this.term.rows, 10) / 2)
   }
 
   componentWillUnmount () {
@@ -651,7 +685,7 @@ class Channel extends Component {
     let terminal = this.terminalRef.current
     const dy = this.pos - event.y
     this.pos = event.y
-    const newHeight = (parseInt(getComputedStyle(container, '').height) - dy)
+    const newHeight = (parseInt(getComputedStyle(container, '').height, 10) - dy)
     container.style.height = newHeight + 'px'
     terminal.style.height = (newHeight - this.borderSize) + 'px'
     this.term.fit()
@@ -659,7 +693,7 @@ class Channel extends Component {
 
   setupTerminalResizer () {
     let resizer = this.terminalResizerRef.current
-    this.borderSize = parseInt(getComputedStyle(resizer, '').height)
+    this.borderSize = parseInt(getComputedStyle(resizer, '').height, 10)
 
     this.pos = 0
 
@@ -686,7 +720,7 @@ class Channel extends Component {
   async handleIncomingMessage (event) {
     let data
     if (typeof event === 'string') {
-      let value = Buffer.from(event, 'hex')
+      let value: any = Buffer.from(event, 'hex')
       value = value.buffer
       data = value
     } else {
@@ -698,7 +732,7 @@ class Channel extends Component {
     try {
       const json = JSON.parse(data)
       if (json.__server_message__) {
-        this.logMessage(json.__server_message__.data)
+        // this.logMessage(json.__server_message__.data)
         return false
       }
     } catch (error) {
@@ -713,9 +747,14 @@ class Channel extends Component {
     // return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
     // }
 
-    const {mime, arrayBuffer} = arrayBufferMimeDecouple(data)
+    const { mime, arrayBuffer } = arrayBufferMimeDecouple(data)
 
     console.log('received', mime)
+
+    // TODO: fix
+    if (mime.length > 20) {
+      return
+    }
 
     if (mime === 'shell') {
       let text = new window.TextDecoder('utf-8').decode(new Uint8Array(arrayBuffer))
@@ -729,14 +768,14 @@ class Channel extends Component {
       return
     }
 
-    const blob = new Blob([arrayBuffer], {type: mime})
+    const blob = new Blob([arrayBuffer], { type: mime })
 
     let ext = mime.split(`/`).join(`_`).replace(/[^\w\d_]/gi, ``)
     let url = window.URL.createObjectURL(blob)
 
     const t = await new Promise(resolve => {
       const reader = new FileReader()
-      reader.onload = (event) => {
+      reader.onload = (event1: any) => {
         resolve(reader.result)
       }
 
@@ -778,7 +817,7 @@ class Channel extends Component {
       return null
     }
     let { mime, blob, url, ext, t } = data
-    let element = null
+    let element: any = null
     let clipboardText = url
 
     if (/image/gi.test(mime)) {
@@ -787,21 +826,21 @@ class Channel extends Component {
           maxWidth: '500px'
         }}
         href={url}
-        target='_blank'
-        rel='noopener noreferrer'
-        title='view image'>
-        <img src={url} alt='' />
+        target="_blank"
+        rel="noopener noreferrer"
+        title="view image">
+        <img src={url} alt="" />
       </a>
     } else if (/video/gi.test(mime)) {
-      element = [<div>
-        <video src={url} controls='controls' />
-      </div>]
+      element = <div>
+        <video src={url} controls={true} />
+      </div>
     } else if (/audio/gi.test(mime)) {
-      element = [<audio controlers='controls' src={url} />]
+      element = <audio controls={true} src={url} />
     } else if (/zip/gi.test(mime)) {
-      element = [<span>.zip</span>]
+      element = <span>.zip</span>
     } else if (/pdf/gi.test(mime)) {
-      element = [<span>.pdf</span>]
+      element = <span>.pdf</span>
       // } else if (/(json|javascript|text)/gi.test(mime)) {
     } else {
       // if the text is just an image url
@@ -809,7 +848,7 @@ class Channel extends Component {
         url = t
         clipboardText = url
         element = <div>
-          <img src={url} alt='' />
+          <img src={url} alt="" />
         </div>
       } else {
         clipboardText = t
@@ -827,9 +866,9 @@ class Channel extends Component {
         <span>{blob.type} size: {prettysize(blob.size)}</span>
         <a
           href={url}
-          target='_blank'
-          rel='noopener noreferrer'
-          title='view asset'>{url}↗</a>
+          target="_blank"
+          rel="noopener noreferrer"
+          title="view asset">{url}↗</a>
       </UI.Header>
       <article>
         {element}
@@ -839,7 +878,7 @@ class Channel extends Component {
           <a
             href={url}
             download={filename}
-            title='download asset'
+            title="download asset"
           >download</a>
           <Clipboard
             style={{
@@ -908,7 +947,7 @@ class Channel extends Component {
   }
 
   render () {
-    let messages = <UI.NoMessages>no messages</UI.NoMessages>
+    let messages: any = <UI.NoMessages>no messages</UI.NoMessages>
     if (this.state.messages.length) {
       messages = this.state.messages.map(x => this.renderMessage(x))
     }
@@ -916,7 +955,7 @@ class Channel extends Component {
     const { terminalBlurred, terminalScrollable } = this.state
 
     return (
-      <UI.SiteContainer id='site-container'>
+      <UI.SiteContainer id="site-container">
         <Header
           shareUrl={this.state.shareUrl}
         />
@@ -931,7 +970,7 @@ class Channel extends Component {
           ref={this.terminalContainerRef}
           onClick={event => this.focusTerminal()}>
           <UI.Terminal
-            id='terminal'
+            id="terminal"
             style={{
               height: '350px'
             }}
@@ -986,12 +1025,12 @@ class Channel extends Component {
             {this.state.fullScreen
               ? <UI.FullscreenButton
                 onClick={event => this.exitFullScreen()}
-                className='link'>
+                className="link">
                 <span>exit fullscreen</span>
               </UI.FullscreenButton>
               : <UI.FullscreenButton
                 onClick={event => this.showFullScreen(event)}
-                className='link'>
+                className="link">
                 <span>fullscreen</span> ⤢
               </UI.FullscreenButton>}
           </UI.TerminalFooter>
@@ -1002,30 +1041,30 @@ class Channel extends Component {
 
         <div>
           <output
-            id='output'
+            id="output"
             ref={this.output}>
             {messages}
           </output>
           <UI.Form
-            id='form'
+            id="form"
             onSubmit={event => this.handleSubmit(event)}>
             <UI.FormGroup
-              className='file-form-group'>
+              className="file-form-group">
               <label>Files <small>Drag files into screen</small></label>
               <div style={{
                 marginBottom: '0.5em'
               }}>
                 <input
-                  type='file'
-                  multiple
-                  id='file'
+                  type="file"
+                  multiple={true}
+                  id="file"
                   onChange={event => this.handleFileInputChange(event)}
                   ref={this.fileInput} />
               </div>
-              <div className='queued-files'>
+              <div className="queued-files">
                 {this.state.queuedFiles.map(file =>
                   <Tag
-                    className='file-tag'
+                    className="file-tag"
                     key={file.name}
                     text={file.name}
                     onDelete={event => this.onFileRemove(event, file.name)} />
@@ -1033,24 +1072,24 @@ class Channel extends Component {
               </div>
             </UI.FormGroup>
             <UI.FormGroup
-              className='input-form-group'
+              className="input-form-group"
               style={{
                 width: '100%'
               }}>
               <label>Text <small>enter to submit and shift-enter for newline</small></label>
               <textarea
-                id='text'
-                rows='2'
-                placeholder='text'
+                id="text"
+                rows={2}
+                placeholder="text"
                 value={this.state.text}
                 onKeyPress={event => this.handleKeyPress(event)}
-                onChange={event => this.setState({text: event.target.value})} />
+                onChange={event => this.setState({ text: event.target.value })} />
             </UI.FormGroup>
-            <UI.FormGroup className='submit-form-group'>
+            <UI.FormGroup className="submit-form-group">
               <div>
                 <button
-                  className='button'
-                  type='submit'>
+                  className="button"
+                  type="submit">
                   Send</button></div>
             </UI.FormGroup>
           </UI.Form>

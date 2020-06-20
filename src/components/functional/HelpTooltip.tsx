@@ -1,11 +1,19 @@
 import React, { Component } from 'react'
 import Tooltip from '@material-ui/core/Tooltip'
 
-class HelpTooltip extends Component {
+interface Props {
+  text: string
+  iconStyle: any
+}
+
+interface State {
+}
+
+class HelpTooltip extends Component<Props, State> {
   render () {
     return (
       <Tooltip
-        className='help-tooltip'
+        className="help-tooltip"
         title={this.props.text}
         aria-label={this.props.text}>
         <span style={this.props.iconStyle}>?</span>
