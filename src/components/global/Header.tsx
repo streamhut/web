@@ -6,6 +6,7 @@ import ClipboardJS from 'clipboard'
 import Clipboard from 'src/components/functional/Clipboard'
 import HelpTooltip from 'src/components/functional/HelpTooltip'
 import MaxWidthContainer from 'src/components/functional/MaxWidthContainer'
+import { streamHostname, streamPort } from 'src/config'
 
 const UI = {
   Header: styled.header`
@@ -189,8 +190,8 @@ class Header extends Component<Props, State> {
     super(props)
 
     this.state = {
-      hostname: window.location.hostname,
-      port: 1337,
+      hostname: streamHostname,
+      port: streamPort,
       showExampleWithChannel: false,
       channel: window.location.pathname.substr(3)
     }

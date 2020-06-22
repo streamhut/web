@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import GithubIcon from 'mdi-material-ui/GithubCircle'
 import MaxWidthContainer from 'src/components/functional/MaxWidthContainer'
 import SubscribeForm from './SubscribeForm'
+import { streamHostname, streamPort } from 'src/config'
 
 const UI = {
   Main: styled.div`
@@ -15,9 +16,6 @@ const UI = {
     justify-content: center;
     flex-direction: column;
     padding: 6rem 3rem;
-    @media (max-width: 500px) {
-      padding: 3rem 1rem;
-    }
   `,
   HeroImage: styled.div`
     display: block;
@@ -33,7 +31,7 @@ const UI = {
       max-width: 500px;
       height: auto;
       @media (max-width: 500px) {
-        max-width: 200px;
+        max-width: 320px;
       }
     }
   `,
@@ -69,7 +67,6 @@ const UI = {
       max-width: 345px;
     }
     @media (max-width: 500px) {
-      padding: 3rem 1rem;
       small {
         max-width: 100%;
       }
@@ -214,9 +211,6 @@ const UI = {
     text-align: center;
     color: #fff;
     font-size: 1.5rem;
-    @media (max-width: 500px) {
-      padding: 3rem 1rem;
-    }
     h3 {
       font-size: 1.8rem;
       font-weight: 700;
@@ -262,9 +256,6 @@ const UI = {
     padding: 5rem 2rem;
     text-align: center;
     font-size: 1.2rem;
-    @media (max-width: 500px) {
-      font-size: 1rem;
-    }
     h3 {
       font-size: 1.8rem;
       font-weight: 700;
@@ -291,9 +282,6 @@ const UI = {
     font-size: 1.2rem;
     background: #fff url('https://s3.amazonaws.com/assets.streamhut.io/background-pattern-round.png') repeat 0 0;
     border-top: 1px solid #f4f4f5;
-    @media (max-width: 500px) {
-      font-size: 1rem;
-    }
     h3 {
       font-size: 1.8rem;
       font-weight: 700;
@@ -345,8 +333,8 @@ class Home extends Component<Props, State> {
   constructor (props) {
     super(props)
     this.state = {
-      hostname: window.location.hostname,
-      port: 1337
+      hostname: streamHostname,
+      port: streamPort
     }
   }
 
@@ -399,9 +387,14 @@ class Home extends Component<Props, State> {
           </div>
           <div>
             <div>
-              <img
+              <a
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open gif"
+              href="https://s3.amazonaws.com/assets.streamhut.io/streamhut_demo_1.gif"
+              ><img
                 src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_demo_1.gif"
-                alt="screencast" />
+                alt="screencast" /></a>
             </div>
           </div>
         </UI.Cast>

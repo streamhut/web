@@ -8,7 +8,7 @@ import MaxWidthContainer from 'src/components/functional/MaxWidthContainer'
 const UI = {
   Footer: styled.footer`
     align-items: start;
-    padding: 2rem;
+    padding: 4em 2rem;
     width: 100%;
     font-size: 1rem;
     text-align: right;

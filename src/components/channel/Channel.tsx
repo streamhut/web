@@ -19,6 +19,7 @@ import Header from 'src/components/global/Header'
 import Clipboard from 'src/components/functional/Clipboard'
 import DragAndDrop from 'src/components/functional/DragAndDrop'
 import Tag from 'src/components/functional/Tag'
+import { getShareUrl } from 'src/config'
 
 Terminal.applyAddon(fit)
 Terminal.applyAddon(fullscreen)
@@ -98,6 +99,8 @@ function genRandString() {
 
 const UI = {
   SiteContainer: styled.main`
+    display: flex;
+    flex-direction: column;
   `,
   Header: styled.header`
     display: flex;
@@ -106,6 +109,42 @@ const UI = {
     padding: 5px;
     position: relative;
     padding-right: 35px;
+  `,
+  OutputContainer: styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+  `,
+  Output: styled.output`
+    width: 100%;
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 1rem;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex: 2;
+    flex-direction: column;
+    box-shadow: 0 1px 10px rgba(151,164,175,0.1);
+
+    @media (max-width: 500px) {
+      padding: 0;
+    }
+
+    textarea {
+      font-size: 12px;
+    }
+
+    .item footer .copy {
+      margin-left: 0.5rem;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      max-width: 500px;
+    }
   `,
   Form: styled.form`
     display: flex;
@@ -220,9 +259,19 @@ const UI = {
     }
   `,
   NoMessages: styled.div`
-    font-style: italic;
-    color: #7b7b7b;
-    font-size: 1rem;
+    display: flex;
+    align-items: flex-end;
+    flex: 1;
+    span {
+      display: inline-block;
+      font-style: italic;
+      color: #7b7b7b;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 500px) {
+      padding: 2em;
+    }
   `,
   /* background: #293238; */
   TerminalContainer: styled.div`
@@ -328,7 +377,7 @@ class Channel extends Component<Props, State> {
       text: '',
       file: null,
       messages: [],
-      shareUrl: this.getShareUrl(channel),
+      shareUrl: getShareUrl(channel),
       fullScreen: false,
       queuedFiles: [],
       fullScreenUrl: '',
@@ -357,18 +406,6 @@ class Channel extends Component<Props, State> {
     this.terminalRef = React.createRef()
     this.terminalContainerRef = React.createRef()
     this.terminalResizerRef = React.createRef()
-  }
-
-  getShareUrl (channel: string) {
-    let protocol = window.location.protocol
-    let host = window.location.host
-    let pathname = `s/${channel}`
-    if (host === 'streamhut.io') {
-      host = 'stream.ht'
-      pathname = channel
-    }
-
-    return `${protocol}//${host}/${pathname}`
   }
 
   setFullScreen () {
@@ -689,6 +726,8 @@ class Channel extends Component<Props, State> {
     container.style.height = newHeight + 'px'
     terminal.style.height = (newHeight - this.borderSize) + 'px'
     this.term.fit()
+
+    this.resizeOutputContainer()
   }, 20)
 
   setupTerminalResizer () {
@@ -703,9 +742,23 @@ class Channel extends Component<Props, State> {
     document.addEventListener('mouseup', event => {
       document.removeEventListener('mousemove', this.resizeTerminal, false)
     }, false)
+
+    // TODO: fix resizing on mobile
     // document.addEventListener('touchstart', event => {
     // document.removeEventListener('touchmove', this.resizeTerminal, false)
     // }, false)
+  }
+
+  resizeOutputContainer () {
+    const outputContainer = document.getElementById('output-container') as HTMLElement
+    const output = document.getElementById('output') as HTMLElement
+    const form = document.getElementById('form') as HTMLElement
+
+    const terminalContainer = this.terminalContainerRef.current
+    const maxHeightAllowed = window.outerHeight - terminalContainer.offsetHeight - terminalContainer.offsetTop - form.offsetHeight - 25
+    const maxHeight = outputContainer.offsetHeight - form.offsetHeight
+
+    output.style.maxHeight = `${Math.min(maxHeight, maxHeightAllowed)}px`
   }
 
   sendArrayBuffer (arrayBuffer, mime) {
@@ -947,7 +1000,9 @@ class Channel extends Component<Props, State> {
   }
 
   render () {
-    let messages: any = <UI.NoMessages>no messages</UI.NoMessages>
+    let messages: any = <UI.NoMessages>
+      <span>no messages</span>
+    </UI.NoMessages>
     if (this.state.messages.length) {
       messages = this.state.messages.map(x => this.renderMessage(x))
     }
@@ -1041,12 +1096,12 @@ class Channel extends Component<Props, State> {
           >☰</UI.TerminalResizer>
         </UI.TerminalContainer>
 
-        <div>
-          <output
+        <UI.OutputContainer id="output-container">
+          <UI.Output
             id="output"
             ref={this.output}>
             {messages}
-          </output>
+          </UI.Output>
           <UI.Form
             id="form"
             onSubmit={event => this.handleSubmit(event)}>
@@ -1095,7 +1150,7 @@ class Channel extends Component<Props, State> {
                   Send</button></div>
             </UI.FormGroup>
           </UI.Form>
-        </div>
+        </UI.OutputContainer>
         <DragAndDrop
           handleDrop={files => this.handleDrop(files)} />
       </UI.SiteContainer>
