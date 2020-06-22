@@ -7,16 +7,18 @@ import MaxWidthContainer from 'src/components/functional/MaxWidthContainer'
 
 const UI = {
   Footer: styled.footer`
-    font-size: 1em;
-    padding: 1em;
-    text-align: right;
-    width: 100%;
-    background: #293238;
     align-items: start;
+    padding: 2rem;
+    width: 100%;
+    font-size: 1rem;
+    text-align: right;
+    background: rgb(0,0,0);
+    background: linear-gradient(90deg, rgba(0,0,0,1) 36%, rgba(32,48,56,1) 100%);
   `,
   Container: styled.footer`
     display: flex;
     justify-content: space-between;
+    opacity: 0.5;
     @media (max-width: 500px) {
       flex-direction: column;
     }
@@ -25,9 +27,9 @@ const UI = {
     font-weight: bold;
     display: flex;
     align-items: center;
-    color: #547184;
+    color: #fff;
     @media (max-width: 500px) {
-      margin-bottom: 1em;
+      margin-bottom: 1rem;
     }
   `,
   Social: styled.div`
@@ -37,14 +39,15 @@ const UI = {
     a {
       display: inline-flex;
       align-items: center;
-      margin: 0 0 0 1em;
-      color: #9e9e9e;
+      margin: 0 0 0 1rem;
+      font-weight: 700;
+      color: #fff;
     }
     @media (max-width: 500px) {
       flex-direction: column;
       align-items: flex-start;
       a {
-        margin: 0 0 0.5em 0;
+        margin: 0 0 0.5rem 0;
       }
     }
   `
@@ -63,9 +66,10 @@ class Footer extends Component {
                 <img
                   style={{
                     width: '100px',
-                    marginLeft: '0.4em'
+                    marginLeft: '0.4rem',
+                    marginBottom: '0.5rem'
                   }}
-                  src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu-gry_400.png"
+                  src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_white_300x65.png"
                   alt="Streamhut" />
               </a>
             </UI.Copyright>

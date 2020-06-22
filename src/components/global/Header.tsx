@@ -23,21 +23,21 @@ const UI = {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1em;
+    padding: 1rem;
     @media (max-width: 500px) {
       flex-direction: column;
       align-items: flex-start;
     }
   `,
   Title: styled.h1`
-    font-size: 2em;
+    font-size: 2rem;
     font-weight: normal;
     align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     @media (max-width: 500px) {
-      margin-bottom: 0.5em;
+      margin-bottom: 0.5rem;
       align-items: flex-start;
       .tooltip {
         display: none;
@@ -46,33 +46,36 @@ const UI = {
   `,
   UL: styled.ul`
     list-style: none;
-    padding-bottom: 0.8em;
+    padding-bottom: 0.8rem;
   `,
   LI: styled.li`
-    margin-bottom: 0.3em;
+    margin-bottom: 0.3rem;
   `,
   Channel: styled.div`
     width: 100%;
-    margin-left: 2em;
-    max-width: 17em;
+    margin-left: 2rem;
+    max-width: 17rem;
     a {
-      font-size: 0.8em;
+      font-size: 0.8rem;
     }
     label {
-      font-size: 0.8em;
-      margin-right: 0.4em;
+      font-size: 0.8rem;
+      margin-right: 0.4rem;
       display: block;
-      font-size: 0.7em;
-      color: #676767;
+      font-size: 0.7rem;
+      color: #000;
       display: flex;
       align-items: center;
     }
     .tooltip {
-      margin-left: 0.2em;
+      margin-left: 0.2rem;
     }
     small {
-      margin-left: 2em;
-      color: #bbb;
+      margin-left: 2rem;
+      color: rgba(0,0,0,0.5);
+    }
+    @media (max-width: 720px) {
+      max-width: 100%;
     }
     @media (max-width: 500px) {
       margin-left: 0;
@@ -80,8 +83,8 @@ const UI = {
   `,
   ShareUrlInput: styled.input`
     width: 180px;
-    margin-right: 0.5em;
-    font-size: 0.7em;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
     background: #fff;
     &:hover {
       border-color: #ccc;
@@ -95,17 +98,17 @@ const UI = {
   Examples: styled.div`
     display: flex;
     width: 100%;
-    padding: 0.5em 0.5em 0.5em 2em;
-    font-size: 0.6em;
-    color: #222;
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
+    font-size: 0.8rem;
+    color: #000;
     line-height: 1.4;
     label {
       display: inline-block;
       width: 60px;
       font-weight: 600;
       text-align: right;
-      padding-right: 0.5em;
-      font-size: 1.2em;
+      padding-right: 0.5rem;
+      font-size: 0.8rem;
       @media (max-width: 780px) {
         width: auto;
       }
@@ -113,7 +116,7 @@ const UI = {
     code {
       background: #405a6b;
       color: white;
-      padding: 0.4em;
+      padding: 0.4rem;
       border-radius: 2px;
       display: inline-block;
       width: 280px;
@@ -124,7 +127,7 @@ const UI = {
     details {
       display: block;
       button {
-        font-size: 1em;
+        font-size: 1rem;
       }
       &[open] {
         summary div {
@@ -136,20 +139,20 @@ const UI = {
       }
     }
     summary {
-      font-size: 1.4em;
+      font-size: 1.2rem;
       cursor: pointer;
-      margin-bottom: 0.5em;
-      color: #067df7;
+      margin-bottom: 0.5rem;
+      color: #000;
       span {
         display: inline-block;
       }
       div {
         display: none;
         float: right;
-        font-size: 1em;
+        font-size: 1rem;
       }
       button {
-        font-size: 0.8em;
+        font-size: 0.8rem;
       }
       &:hover span {
         text-decoration: underline;
@@ -160,9 +163,9 @@ const UI = {
     }
   `,
   Notice: styled.div`
-    font-size: 0.7em;
+    font-size: 0.7rem;
     background: #dededa;
-    padding: 0.1em;
+    padding: 0.1rem;
 }
   `
 }
@@ -242,7 +245,7 @@ class Header extends Component<Props, State> {
                     width: '150px',
                     height: 'auto'
                   }}
-                  src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_blu_blk_400.png"
+                  src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_color_300x65.png"
                   alt="Streamhut" />
               </a>
 
@@ -250,7 +253,9 @@ class Header extends Component<Props, State> {
                 className="tooltip"
                 title={
                   <React.Fragment>
-                    <div>
+                    <div style={{
+                      padding: '0.5rem'
+                    }}>
                       <ul>
                         <li>Stream your terminal to anyone without installing anything.</li>
                         <li>Quickly share data and files between devices.</li>
@@ -262,7 +267,7 @@ class Header extends Component<Props, State> {
                 }
               >
                 <div style={{
-                  fontSize: '0.3em'
+                  fontSize: '0.8rem'
                 }}>What is this?</div>
               </Tooltip>
 
@@ -272,8 +277,8 @@ class Header extends Component<Props, State> {
                 <HelpTooltip
                   text="Share this URL with others to join and see your stream and messages"
                   iconStyle={{
-                    fontSize: '0.8em',
-                    marginLeft: '0.2em'
+                    fontSize: '0.6rem',
+                    marginLeft: '0.2rem'
                   }} />
                 <small
                   ref={this.copyHelpText}
@@ -282,7 +287,7 @@ class Header extends Component<Props, State> {
               <UI.ShareUrlInput
                 style={{
                   borderRadius: '2px',
-                  padding: '0.5em',
+                  padding: '0.5rem',
                   border: '1px solid #e0e0e0'
                 }}
                 type="text"
@@ -362,7 +367,7 @@ class Header extends Component<Props, State> {
         </MaxWidthContainer>
         <UI.Notice>
           <MaxWidthContainer>
-            <strong>Notice:</strong> streamhut is alpha quality and storage might be reset. Use at your risk. <a
+            <strong>⚠️ Notice:</strong> streamhut is alpha quality and storage might be reset. Use at your risk. <a
               href="/#subscribe"
               target="_blank"
               rel="noopener noreferrer"

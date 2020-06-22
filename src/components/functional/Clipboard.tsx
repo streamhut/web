@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ClipboardJS from 'react-clipboard.js'
+import ContentCopyIcon from 'mdi-material-ui/ContentCopy'
 
 interface Props {
   className?: string
@@ -8,18 +9,27 @@ interface Props {
 }
 
 interface State {
-
+  copied: boolean
 }
 
 class Clipboard extends Component<Props, State> {
-  onClipboardCopy (event) {
-    const target = event.trigger
-    target.textContent = 'copied!'
-    target.classList.add('copied')
+  constructor (props: Props) {
+    super(props)
 
-    setTimeout(function () {
-      target.textContent = 'copy'
-      target.classList.remove('copied')
+    this.state = {
+      copied: false
+    }
+  }
+
+  onClipboardCopy (event) {
+    this.setState({
+      copied: true
+    })
+
+    setTimeout(() => {
+      this.setState({
+        copied: false
+      })
     }, 3e3)
   }
 
@@ -31,7 +41,11 @@ class Clipboard extends Component<Props, State> {
         button-title="Copy to clipboard"
         data-clipboard-text={this.props.clipboardText}
         onSuccess={event => this.onClipboardCopy(event)}>
-        copy
+        {this.state.copied ?
+          'copied!'
+        :
+          <ContentCopyIcon fontSize="small" />
+        }
       </ClipboardJS>
     )
   }

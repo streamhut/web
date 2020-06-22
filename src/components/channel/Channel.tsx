@@ -125,7 +125,7 @@ const UI = {
     align-items: start;
     flex-direction: column;
     margin: 0;
-    padding: 0.5em;
+    padding: 0.5rem;
 
     &.file-form-group {
       min-width: 250px;
@@ -141,17 +141,17 @@ const UI = {
     width: auto;
     max-height: 120px;
     overflow: auto;
-    font-size: 0.8em;
+    font-size: 0.8rem;
     white-space: pre-wrap;
-    margin-bottom: 2em;
+    margin-bottom: 2rem;
     background: rgba(239, 239, 239, 0.35);
-    padding: 1em;
+    padding: 1rem;
   `,
   Message: styled.div`
     background: #efefef;
     width: 100%;
     font-size: 12px;
-    margin: 0 0 0.2em 0;
+    margin: 0 0 0.2rem 0;
 
     article {
       display: flex;
@@ -176,9 +176,9 @@ const UI = {
       display: flex;
       justify-content: space-between;
       background: #e2e2e2;
-      font-size: 0.8em;
+      font-size: 0.8rem;
       position: relative;
-      padding: 0.4em 2em 0.4em 0.4em;
+      padding: 0.4rem 2rem 0.4rem 0.4rem;
       overflow: hidden;
     }
 
@@ -186,8 +186,8 @@ const UI = {
       content: "";
       display: block;
       position: absolute;
-      width: 2em;
-      height: 4em;
+      width: 2rem;
+      height: 4rem;
       background: #fff;
       right: 0;
       top: 0;
@@ -196,10 +196,10 @@ const UI = {
 
     footer {
       display: flex;
-      font-size: 0.8em;
+      font-size: 0.8rem;
       justify-content: space-between;
       background: #e2e2e2;
-      padding: 0.4em;
+      padding: 0.4rem;
     }
 
     footer .download {
@@ -222,12 +222,12 @@ const UI = {
   NoMessages: styled.div`
     font-style: italic;
     color: #7b7b7b;
-    font-size: 0.8em;
+    font-size: 1rem;
   `,
   /* background: #293238; */
   TerminalContainer: styled.div`
     background-color: #000;
-    padding-bottom: 2em; /* same as resizer height */
+    padding-bottom: 2rem; /* same as resizer height */
     position: relative;
     width: 100%;
     height: auto;
@@ -241,13 +241,13 @@ const UI = {
   `,
   TerminalFooter: styled.footer`
     position: absolute;
-    bottom: 15px;
+    bottom: 2rem;
     left: 0;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 0 1em;
+    padding: 0 1rem;
     color: #fff;
     z-index: 1000;
     &.fixed {
@@ -256,15 +256,15 @@ const UI = {
   `,
   TerminalResizer: styled.div`
     width: 100%;
-    height: 2em;
+    height: 1.2rem;
     position: absolute;
     bottom: 0;
     cursor: row-resize;
     background-color: #efefef;
     border: 1px solid #cacaca;
     text-align: center;
-    font-size: 0.5em;
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: 1;
     color: #797979;
     &:hover {
       background-color: #e6e6e6;
@@ -272,7 +272,7 @@ const UI = {
     }
   `,
   FullscreenButton: styled.button`
-    font-size: 1em;
+    font-size: 1rem;
     span {
       display: inline-block;
     }
@@ -984,23 +984,24 @@ class Channel extends Component<Props, State> {
               <div
                 style={{
                   display: 'inline-block',
-                  fontSize: '0.6em',
+                  fontSize: '0.8rem',
                   opacity: '0.5',
-                  marginRight: '1em'
+                  marginRight: '1rem',
+                  fontWeight: 700
                 }}>
               READ-ONLY
               </div>
               <div style={{
                 display: 'inline-block',
-                fontSize: '0.8em',
-                opacity: '0.2'
+                fontSize: '0.8rem',
+                opacity: '0.5'
               }}>{this.state.terminalPressedKey}</div>
             </div>
             {(terminalBlurred && terminalScrollable) && <div
               style={{
                 display: 'inline-block',
-                marginRight: '1em',
-                fontSize: '0.8em',
+                marginRight: '1rem',
+                fontSize: '0.8rem',
                 opacity: '0.5'
               }}>
               click to scroll terminal
@@ -1008,16 +1009,17 @@ class Channel extends Component<Props, State> {
             {!terminalBlurred && <div
               style={{
                 display: 'inline-block',
-                marginRight: '1em',
-                fontSize: '0.8em',
-                opacity: '0.2'
+                marginRight: '1rem',
+                fontSize: '0.8rem',
+                opacity: '0.5'
               }}>vim-shortcut keys enabled</div>}
             {!terminalBlurred && <div
               style={{
                 display: 'inline-block',
-                marginRight: '1em',
-                fontSize: '0.8em',
-                opacity: '0.5'
+                marginRight: '1rem',
+                fontSize: '0.8rem',
+                opacity: '0.5',
+                fontWeight: 700
               }}>
               ESC to focus out
             </div>

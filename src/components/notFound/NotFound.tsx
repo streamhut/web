@@ -6,12 +6,13 @@ const UI = {
     display; flex;
     justify-content: center;
     align-items: center;
-    padding: 3em;
+    padding: 3rem;
+    font-size: 1.4rem;
     h3 {
-      font-size: 2em;
-      margin-bottom: 1em;
+      font-size: 2rem;
+      margin-bottom: 1rem;
       @media (max-width: 500px) {
-        font-size: 1.6em;
+        font-size: 1.6rem;
       }
     }
     a {

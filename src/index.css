@@ -13,8 +13,8 @@ body {
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", Verdana,Geneva,sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #222;
-  font-size: 14px;
+  color: #000;
+  font-size: 10px;
   line-height: 1.4;
 }
 
@@ -55,7 +55,7 @@ input[type="file"],
 textarea {
   border: 1px solid #777;
   border-radius: 5px;
-  padding: 1em;
+  padding: 1rem;
   font-family: Verdana,Geneva,sans-serif;
 }
 
@@ -91,7 +91,7 @@ button {
 
 input[type="file"] {
   width: 100%;
-  padding: 1em;
+  padding: 1rem;
   cursor: pointer;
 }
 
@@ -130,7 +130,7 @@ a:focus,
 }
 
 a svg {
-  margin-right: 0.2em;
+  margin-right: 0.2rem;
 }
 
 #form textarea,
@@ -155,7 +155,7 @@ input[type="text"]:focus {
 }
 
 #form label small {
-  font-size: 0.8em;
+  font-size: 0.8rem;
   color: rgba(0,0,0,0.5);
 }
 
@@ -168,7 +168,7 @@ input[type="text"]:focus {
   align-items: center;
   cursor: pointer;
   -webkit-appearance: none;
-  padding: 1.2em 2em;
+  padding: 1.2rem 2rem;
   border-radius: 4px;
   outline: none;
   font-weight: 600;
@@ -179,7 +179,7 @@ input[type="text"]:focus {
   border-style: solid;
   border-color: #0062cc;
   line-height: 1;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.1rem;
   text-transform: uppercase;
   text-decoration: none;
 }
@@ -194,12 +194,12 @@ input[type="text"]:focus {
 }
 
 .button svg {
-  margin-right: 0.2em;
+  margin-right: 0.2rem;
 }
 
 @media (max-width: 500px) {
   .button {
-    font-size: 0.8em;
+    font-size: 0.8rem;
   }
 }
 
@@ -208,7 +208,7 @@ input[type="text"]:focus {
   max-height: 300px;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 1em;
+  padding: 1rem;
   width: 100%;
   position: relative;
   display: flex;
@@ -249,7 +249,7 @@ input[type="text"]:focus {
 }
 
 #output .item footer .copy {
-  margin-left: 0.5em;
+  margin-left: 0.5rem;
 }
 
 #output video {
@@ -262,7 +262,7 @@ input[type="text"]:focus {
 
 #site-container {
     min-height: 100%;
-    margin-bottom: -10em;
+    margin-bottom: -10rem;
 }
 
 #site-container:after {
@@ -271,7 +271,7 @@ input[type="text"]:focus {
 }
 
 #footer, #site-container:after {
-    height: 10em;
+    height: 10rem;
 }
 
 /* end sticky footer */
@@ -337,15 +337,15 @@ body.fullscreen #terminal {
 }
 
 .help-tooltip {
-  border-radius: 10em;
-  width: 1.3em;
-  height: 1.3em;
+  border-radius: 10rem;
+  width: 0.9rem;
+  height: 0.9rem;
   border: 1px solid #6e6e6e;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1em;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 760px) {

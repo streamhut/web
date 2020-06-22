@@ -100,8 +100,8 @@ class DragAndDrop extends Component<Props, State> {
             <div
               style={{
                 border: '4px dashed #0075ff',
-                fontSize: '2em',
-                padding: '1em'
+                fontSize: '2rem',
+                padding: '1rem'
               }}>
               Drop file here
             </div>

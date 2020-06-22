@@ -3,26 +3,26 @@ import styled from 'styled-components'
 
 const UI = {
   Container: styled.div`
-    font-size: 1em;
+    font-size: 1rem;
     label {
       display: block;
-      font-size: 0.6em;
-      margin: 0 auto 0.2em auto;
+      font-size: 1rem;
+      margin: 0 auto 0.5rem auto;
       width: 100%;
-      max-width: 300px;
+      max-width: 360px;
       text-align: left;
     }
     input[type="email"] {
-      font-size: 1em;
+      font-size: 1rem;
       width: 100%;
-      max-width: 300px;
-      padding: 0.4em;
+      max-width: 360px;
+      padding: 1rem;
       @media (max-width: 500px) {
         font-size: 16px;
       }
     }
     .mc-field-group {
-      margin-bottom: 0.5em;
+      margin-bottom: 0.5rem;
     }
   `
 }
