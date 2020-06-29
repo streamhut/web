@@ -325,3 +325,8 @@ body.fullscreen #terminal {
     flex-direction: column;
   }
 }
+
+button:focus,
+a:focus {
+  outline: 0;
+}

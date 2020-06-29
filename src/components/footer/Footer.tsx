@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { GithubCircle, Twitter } from 'mdi-material-ui'
+import Twitter from 'mdi-material-ui/Twitter'
+import GithubCircle from 'mdi-material-ui/GithubCircle'
 import moment from 'moment'
 import styled from 'styled-components'
 

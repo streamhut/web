@@ -36,7 +36,7 @@ class SubscribeForm extends Component {
             <div className="mc-field-group">
               <label htmlFor="mce-EMAIL">Email Address <span className="asterisk">*</span>
               </label>
-              <input type="email" name="EMAIL" className="required email" id="mce-EMAIL" placeholder="bob@example.com" />
+              <input type="email" name="EMAIL" className="required email" id="mce-EMAIL" placeholder="alice@example.com" />
             </div>
             <div id="mce-responses" className="clear">
               <div className="response" id="mce-error-response" style={{ display: 'none' }} />
