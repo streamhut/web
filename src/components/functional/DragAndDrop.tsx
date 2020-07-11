@@ -1,4 +1,26 @@
 import React, { Component } from 'react'
+import styled from 'styled-components'
+
+const UI = {
+  Overlay: styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+    border: 4px dashed #0075ff;
+    background: rgba(255, 255, 255, 0.7);
+  `,
+  CenterBox: styled.div`
+    border: 4px dashed #0075ff;
+    font-size: 2rem;
+    padding: 1rem;
+  `
+}
 
 interface Props {
   handleDrop: any
@@ -11,7 +33,7 @@ interface State {
 class DragAndDrop extends Component<Props, State> {
   dragCounter: number
 
-  constructor (props) {
+  constructor (props: Props) {
     super(props)
     this.state = {
       drag: false
@@ -20,12 +42,12 @@ class DragAndDrop extends Component<Props, State> {
     this.dragCounter = 0
   }
 
-  handleDrag (event) {
+  handleDrag (event: any) {
     event.preventDefault()
     event.stopPropagation()
   }
 
-  handleDragIn (event) {
+  handleDragIn (event: any) {
     event.preventDefault()
     event.stopPropagation()
 
@@ -37,7 +59,7 @@ class DragAndDrop extends Component<Props, State> {
     }
   }
 
-  handleDragOut (event) {
+  handleDragOut (event: any) {
     event.preventDefault()
     event.stopPropagation()
 
@@ -48,7 +70,7 @@ class DragAndDrop extends Component<Props, State> {
     }
   }
 
-  handleDrop (event) {
+  handleDrop (event: any) {
     event.preventDefault()
     event.stopPropagation()
 
@@ -82,30 +104,11 @@ class DragAndDrop extends Component<Props, State> {
     return (
       <div>
         {this.state.drag &&
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              color: '#000',
-              border: '4px dashed #0075ff',
-              background: 'rgba(255, 255, 255, 0.7)'
-            }}
-          >
-            <div
-              style={{
-                border: '4px dashed #0075ff',
-                fontSize: '2rem',
-                padding: '1rem'
-              }}>
+          <UI.Overlay>
+            <UI.CenterBox>
               Drop file here
-            </div>
-          </div>
+            </UI.CenterBox>
+          </UI.Overlay>
         }
         {this.props.children}
       </div>

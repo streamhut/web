@@ -110,7 +110,7 @@ class GettingStarted extends Component<Props> {
           </h3>
           <div>
             <pre>
-              {`exec > >(nc ${hostname} ${port}) 2>&1`}
+              {`exec &> >(nc ${hostname} ${port})`}
             </pre>
           </div>
           <small>

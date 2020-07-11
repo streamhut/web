@@ -1,4 +1,5 @@
 const windowHostname = window.location.hostname
+
 export const streamHostname = /^streamhut.(io|net|org|co|me|sh)$/gi.test(windowHostname) ? 'stream.ht'
 : windowHostname
 export const streamPort = 1337

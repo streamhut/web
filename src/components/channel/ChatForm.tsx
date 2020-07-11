@@ -7,10 +7,15 @@ import Clipboard from 'src/components/functional/Clipboard'
 import DragAndDrop from 'src/components/functional/DragAndDrop'
 
 const UI = {
+  Clipboard: styled(Clipboard)`
+    font-size: 1em;
+    margin-left: 1em;
+  `,
   OutputContainer: styled.div`
     display: flex;
     flex-direction: column;
     flex: 2;
+    background: ${({ theme }) => (theme as any).outputBackground};
   `,
   Output: styled.output`
     width: 100%;
@@ -24,23 +29,34 @@ const UI = {
     flex: 2;
     flex-direction: column;
     box-shadow: 0 1px 10px rgba(151,164,175,0.1);
-
     @media (max-width: 500px) {
       padding: 0;
     }
-
     textarea {
       font-size: 12px;
     }
-
-    .item footer .copy {
-      margin-left: 0.5rem;
-    }
-
     video {
       width: 100%;
       height: auto;
       max-width: 500px;
+    }
+  `,
+  Footer: styled.footer`
+    .copy {
+      margin-left: 0.5rem;
+    }
+  `,
+  FooterLeft: styled.div`
+    display: flex;
+    align-items: center;
+  `,
+  FooterRight: styled.div`
+    display: inline-flex;
+    align-items: flex-end;
+    time {
+      font-size: 12px;
+      text-align: right;
+      color: #999;
     }
   `,
   Form: styled.form`
@@ -48,7 +64,8 @@ const UI = {
     justify-content: space-between;
     width: 100%;
     margin: 0;
-    background: #efefef;
+    background: ${({ theme }) => (theme as any).chatFormBackground};
+    color: ${({ theme }) => (theme as any).text};
     padding: 10px;
     position: relative;
     @media (max-width: 500px) {
@@ -62,7 +79,6 @@ const UI = {
     flex-direction: column;
     margin: 0;
     padding: 0.5rem;
-
     &.file-form-group {
       min-width: 250px;
     }
@@ -71,6 +87,9 @@ const UI = {
     }
     &.submit-form-group {
     }
+  `,
+  FileInputContainer: styled.div`
+    margin-bottom: 0.5em;
   `,
   Header: styled.header`
     display: flex;
@@ -90,23 +109,21 @@ const UI = {
       color: #7b7b7b;
       font-size: 1rem;
     }
-
     @media (max-width: 500px) {
       padding: 2em;
     }
   `,
   Message: styled.div`
-    background: #efefef;
+    color: ${({ theme }) => (theme as any).text};
+    background: ${({ theme }) => (theme as any).chatMessageBackground};
     width: 100%;
     font-size: 12px;
     margin: 0 0 0.2rem 0;
-
     article {
       display: flex;
       margin: 10px 0 15px 0;
       padding: 5px;
     }
-
     pre,
     code {
       width: 100%;
@@ -114,60 +131,51 @@ const UI = {
       white-space: pre-wrap;
       word-wrap: break-word;
     }
-
     img {
       object-fit: contain;
       width: 100%;
     }
-
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #e2e2e2;
+      color: ${({ theme }) => (theme as any).text};
+      background: ${({ theme }) => (theme as any).chatMessageHeaderBackground};
       font-size: 0.8rem;
       position: relative;
       padding: 0.4rem 2rem 0.4rem 0.4rem;
       overflow: hidden;
     }
-
     header:after {
       content: "";
       display: block;
       position: absolute;
       width: 2rem;
       height: 4rem;
-      background: #fff;
+      background: ${({ theme }) => (theme as any).outputBackground};
       right: 0;
       top: 0;
       transform: rotate(-45deg) translate(1.7rem,-1em);
     }
-
     footer {
       display: flex;
       font-size: 0.8rem;
       justify-content: space-between;
       align-items: center;
-      background: #e2e2e2;
+      color: ${({ theme }) => (theme as any).text};
+      background: ${({ theme }) => (theme as any).chatMessageHeaderBackground};
       padding: 0.4rem;
     }
-
     footer .download {
       margin-right: 10px;
     }
-
     footer .left {
       display: inline-flex;
       align-items: flex-start;
     }
-
-    time {
-      display: inline-flex;
-      align-items: flex-end;
-      font-size: 12px;
-      text-align: right;
-      color: #999;
-    }
+  `,
+  ImageLink: styled.a`
+    max-width: 500px;
   `
 }
 
@@ -227,31 +235,26 @@ class ChatForm extends Component<Props, State> {
           <UI.FormGroup
             className="file-form-group">
             <label>Files <small>Drag files into screen</small></label>
-            <div style={{
-              marginBottom: '0.5em'
-            }}>
+            <UI.FileInputContainer>
               <input
                 type="file"
                 multiple={true}
                 id="file"
                 onChange={this.handleFileInputChange}
                 ref={this.fileInput} />
-            </div>
+            </UI.FileInputContainer>
             <div className="queued-files">
               {this.state.queuedFiles.map(file =>
                 <Tag
                   className="file-tag"
                   key={file.name}
                   text={file.name}
-                  onDelete={event => this.handleFileRemove(event, file.name)} />
+                  onDelete={(event: any) => this.handleFileRemove(event, file.name)} />
               )}
             </div>
           </UI.FormGroup>
           <UI.FormGroup
-            className="input-form-group"
-            style={{
-              width: '100%'
-            }}>
+            className="input-form-group">
             <label>Text <small>enter to submit and shift-enter for newline</small></label>
             <textarea
               id="text"
@@ -276,7 +279,7 @@ class ChatForm extends Component<Props, State> {
     )
   }
 
-  renderMessage = (data) => {
+  renderMessage = (data: any) => {
     if (!data) {
       return null
     }
@@ -285,16 +288,13 @@ class ChatForm extends Component<Props, State> {
     let clipboardText = url
 
     if (/image/gi.test(mime)) {
-      element = <a
-        style={{
-          maxWidth: '500px'
-        }}
+      element = <UI.ImageLink
         href={url}
         target="_blank"
         rel="noopener noreferrer"
         title="view image">
         <img src={url} alt="" />
-      </a>
+      </UI.ImageLink>
     } else if (/video/gi.test(mime)) {
       element = <div>
         <video src={url} controls={true} />
@@ -338,21 +338,19 @@ class ChatForm extends Component<Props, State> {
         {element}
       </article>
       <footer>
-        <div>
+        <UI.FooterLeft>
           <a
             href={url}
             download={filename}
             title="download asset"
           >download</a>
-          <Clipboard
-            style={{
-              fontSize: '1em',
-              marginLeft: '1em'
-            }}
+          <UI.Clipboard
             clipboardText={clipboardText}
           />
-        </div>
-        <time>{timestamp}</time>
+        </UI.FooterLeft>
+        <UI.FooterRight>
+          <time>{timestamp}</time>
+        </UI.FooterRight>
       </footer>
     </UI.Message>
   }
@@ -366,7 +364,7 @@ class ChatForm extends Component<Props, State> {
 
       const reader = new FileReader()
 
-      const readFile = (event) => {
+      const readFile = (event: any) => {
         const arrayBuffer = reader.result
         const mime = file.type
         this.props.onSubmit([arrayBuffer, mime])
@@ -387,7 +385,7 @@ class ChatForm extends Component<Props, State> {
       const blob = new Blob([text], { type: mime })
       const reader = new FileReader()
 
-      reader.addEventListener('load', (event) => {
+      reader.addEventListener('load', (event: any) => {
         const arrayBuffer = reader.result
         this.props.onSubmit([arrayBuffer, mime])
       })
@@ -397,7 +395,7 @@ class ChatForm extends Component<Props, State> {
     }
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = (event: any) => {
     event.preventDefault()
 
     this.handleTextUpdate()
@@ -408,13 +406,13 @@ class ChatForm extends Component<Props, State> {
     })
   }
 
-  handleFileInputChange = (event) => {
+  handleFileInputChange = (event: any) => {
     event.preventDefault()
 
     this.addFilesToQueue(event.target.files)
   }
 
-  handleDrop = (files) => {
+  handleDrop = (files: any[]) => {
     this.addFilesToQueue(files)
   }
 
@@ -422,7 +420,7 @@ class ChatForm extends Component<Props, State> {
     this.removeFileFromQueue(filename)
   }
 
-  addFilesToQueue = (files) => {
+  addFilesToQueue = (files: any[]) => {
     const list = this.state.queuedFiles
 
     for (let file of files) {

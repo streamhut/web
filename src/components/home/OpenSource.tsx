@@ -33,7 +33,7 @@ class OpenSource extends Component {
   render () {
     return (
       <UI.OpenSource id="github">
-        <h3>💖 Open Source</h3>
+        <h3><span role="img" aria-label="">💖</span> Open Source</h3>
         <p>streamhut source code is available on github</p>
         <div>
           <a

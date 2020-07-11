@@ -72,17 +72,17 @@ class UseCases extends Component {
         <div>
           <h3>Use cases for streamhut:</h3>
           <ul>
-            <li>🐛 Debug logs withs colleagues</li>
-            <li>👥 Help a friend with programming</li>
-            <li>🤝 Live terminal sessions for interviews</li>
+            <li><span role="img" aria-label="">🐛</span> Debug logs withs colleagues</li>
+            <li><span role="img" aria-label="">👥</span> Help a friend with programming</li>
+            <li><span role="img" aria-label="">🤝</span> Live terminal sessions for interviews</li>
           </ul>
         </div>
 
         <small>
           <p>As well as:</p>
           <ul>
-            <li>💬 Pseudo-anonymous communication</li>
-            <li>📱 Transfer content and files between devices</li>
+            <li><span role="img" aria-label="">💬</span> Pseudo-anonymous communication</li>
+            <li><span role="img" aria-label="">📱</span> Transfer content and files between devices</li>
           </ul>
         </small>
       </UI.UseCases>

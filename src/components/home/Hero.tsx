@@ -54,10 +54,10 @@ class Hero extends Component {
           </h1>
         </UI.HeroImage>
         <UI.Tagline>
-            💻 stream your terminal
+          <span role="img" aria-label="">💻</span> stream your terminal
         </UI.Tagline>
         <UI.SubTagline>
-          Share your terminal in real-time with anyone — without installing anything 🚀
+          Share your terminal in real-time with anyone — without installing anything <span role="img" aria-label="">🚀</span>
         </UI.SubTagline>
       </UI.Hero>
     )

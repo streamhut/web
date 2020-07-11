@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
-import {
-  arrayBufferWithMime,
-  arrayBufferMimeDecouple
-} from 'arraybuffer-mime'
+import { arrayBufferWithMime, arrayBufferMimeDecouple } from 'arraybuffer-mime'
 import styled from 'styled-components'
 import Header from 'src/components/header'
 import Footer from 'src/components/footer'
@@ -50,6 +47,7 @@ interface State {
   fullscreenUrl: string
   channel: string
   terminalText: any
+  writable: boolean
 }
 
 class Channel extends Component<Props, State> {
@@ -67,7 +65,8 @@ class Channel extends Component<Props, State> {
       fullscreen: false,
       fullscreenUrl: '',
       channel,
-      terminalText: null
+      terminalText: null,
+      writable: false
     }
 
     const urlParams = getUrlParams()
@@ -95,7 +94,7 @@ class Channel extends Component<Props, State> {
     // connectionsLog.innerHTML = JSON.stringify(data, null, 2)
     // }
 
-    this.ws.addEventListener('message', event => {
+    this.ws.addEventListener('message', (event: any) => {
       this.handleIncomingMessage(event)
     })
 
@@ -116,6 +115,8 @@ class Channel extends Component<Props, State> {
   }
 
   render () {
+    const { writable } = this.state
+
     return (
       <>
       <UI.SiteContainer id="site-container">
@@ -132,6 +133,9 @@ class Channel extends Component<Props, State> {
         <Terminal
           onResize={() => this.resizeOutputContainer()}
           channel={this.state.channel}
+          onData={this.handleFormSubmit}
+          writable={writable}
+          onWritable={this.handleWritableChange}
           text={this.state.terminalText} />
         <ChatForm
           messages={this.state.messages}
@@ -140,6 +144,12 @@ class Channel extends Component<Props, State> {
       <Footer />
     </>
     )
+  }
+
+  handleWritableChange = (writable: boolean) => {
+    this.setState({
+      writable
+    })
   }
 
   setFullScreen = () => {
@@ -160,7 +170,7 @@ class Channel extends Component<Props, State> {
      */
   }
 
-  sendArrayBuffer = (arrayBuffer, mime) => {
+  sendArrayBuffer = (arrayBuffer: any, mime: string) => {
     const abWithMime = arrayBufferWithMime(arrayBuffer, mime)
     try {
       this.ws.send(abWithMime)
@@ -169,8 +179,8 @@ class Channel extends Component<Props, State> {
     }
   }
 
-  handleIncomingMessage = async (event) => {
-    let data
+  handleIncomingMessage = async (event: any) => {
+    let data: any = null
     if (typeof event === 'string') {
       let value: any = Buffer.from(event, 'hex')
       value = value.buffer
@@ -208,16 +218,19 @@ class Channel extends Component<Props, State> {
       return
     }
 
-    if (mime === 'shell') {
+    if (mime === 'shell' || mime === 'shell-stdin') {
       let text = new window.TextDecoder('utf-8').decode(new Uint8Array(arrayBuffer))
       /*
-        text = text.replace(/(\r\n|\n\r|\n|\r)/g, (match, p1, offset, string) => {
-          return green(`${p1}${`${(this.lineNumber++)}`.padEnd(4)} `)
-        })
-        */
-      this.setState({
-        terminalText: text
+      text = text.replace(/(\r\n|\n\r|\n|\r)/g, (match, p1, offset, string) => {
+        return green(`${p1}${`${(this.lineNumber++)}`.padEnd(4)} `)
       })
+      */
+
+      if (mime !== 'shell-stdin') {
+        this.setState({
+          terminalText: text
+        })
+      }
 
       return
     }
@@ -229,7 +242,7 @@ class Channel extends Component<Props, State> {
 
     const t = await new Promise(resolve => {
       const reader = new FileReader()
-      reader.onload = (event1: any) => {
+      reader.onload = (evt: any) => {
         resolve(reader.result)
       }
 

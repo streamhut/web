@@ -1,4 +1,4 @@
-const changeFavicon = (uri) => {
+const changeFavicon = (uri: string) => {
   const link = document.createElement('link')
   const oldLink = document.getElementById('favicon')
 

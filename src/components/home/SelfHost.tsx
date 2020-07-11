@@ -54,7 +54,7 @@ class SelfHost extends Component {
   render () {
     return (
       <UI.SelfHost id="self-host">
-        <h3>Self-hosted option? Absolutely ✅</h3>
+        <h3>Self-hosted option? Absolutely <span role="img" aria-label="">✅</span></h3>
         <small>
             Run streamhut as a Docker container
         </small>

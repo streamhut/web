@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import throttle from 'lodash/throttle'
+import Switch from '@material-ui/core/Switch'
 import ArrowExpandAll from 'mdi-material-ui/ArrowExpandAll'
 import ArrowExpand from 'mdi-material-ui/ArrowExpand'
 import ArrowCollapse from 'mdi-material-ui/ArrowCollapse'
 import FullscreenExit from 'mdi-material-ui/FullscreenExit'
+import HelpTooltip from 'src/components/functional/HelpTooltip'
+import str2ab from 'string-to-arraybuffer'
 import { Terminal } from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import * as termFullscreen from 'xterm/lib/addons/fullscreen/fullscreen'
@@ -14,15 +17,20 @@ import { streamHostname, streamPort } from 'src/config'
 Terminal.applyAddon(fit)
 Terminal.applyAddon(termFullscreen)
 
-const green = t => `${ansi.greenBright.open}${t}${ansi.greenBright.close}`
+const green = (t: any) => `${ansi.greenBright.open}${t}${ansi.greenBright.close}`
 
 const ESC_KEY = 27
+const ENTER_KEY = 13
+const LETTER_I_KEY = 73
 
 const UI = {
+  Container: styled.div`
+    position: relative;
+    padding-bottom: 1.2rem; /* same as resizer height */
+  `,
   /* background: #293238; */
   TerminalContainer: styled.div`
     background-color: #000;
-    padding-bottom: 2rem; /* same as resizer height */
     position: relative;
     width: 100%;
     height: auto;
@@ -35,19 +43,23 @@ const UI = {
     }
   `,
   TerminalFooter: styled.footer`
-    position: absolute;
-    bottom: 2rem;
-    left: 0;
+    background: #000;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 0 1rem;
+    padding: 1rem;
     color: #fff;
     z-index: 1000;
     &.fixed {
       position: fixed;
+      left: 0;
+      bottom: 0;
     }
+  `,
+  TerminalFooterInner: styled.div`
+    display: inline-block;
+    margin-right: auto;
   `,
   TerminalResizer: styled.div`
     width: 100%;
@@ -55,15 +67,17 @@ const UI = {
     position: absolute;
     bottom: 0;
     cursor: row-resize;
-    background-color: #efefef;
-    border: 1px solid #cacaca;
+    border-width: 1px;
+    border-style: solid;
+    background: ${({ theme }) => (theme as any).resizerBackground};
+    border-color: ${({ theme }) => (theme as any).resizerBorderColor};
     text-align: center;
     font-size: 1rem;
     line-height: 1;
     color: #797979;
     &:hover {
-      background-color: #e6e6e6;
-      border-color: #adadad;
+      background: ${({ theme }) => (theme as any).resizerBackgroundHover};
+      border-color: ${({ theme }) => (theme as any).resizerBorderColorHover};
     }
   `,
   FullscreenButton: styled.button`
@@ -78,6 +92,27 @@ const UI = {
       color: #fff;
       opacity: 1;
     }
+  `,
+  ReadWriteLabel: styled.label`
+    display: inline-flex;
+    justify-items: center;
+    align-items: center;
+    font-size: 0.8rem;
+    opacity: 0.5;
+    margin-right: 1rem;
+    font-weight: 700
+    cursor: pointer;
+  `,
+  TerminalPressedKey: styled.div`
+    display: inline-block;
+    fontSize: 0.8rem;
+    opacity: 0.5;
+  `,
+  TerminalSmallHelperText: styled.div`
+    display: inline-block;
+    margin-right: 1rem;
+    font-size: 0.8rem;
+    opacity: 0.5;
   `
 }
 
@@ -85,8 +120,11 @@ interface Props {
   channel?: string
   text?: any
   onResize?: () => void
+  onData?: (item: any) => void
   hideFooter?: boolean
   resizable?: boolean
+  writable?: boolean
+  onWritable?: (writable: boolean) => void
 }
 
 interface State {
@@ -109,6 +147,7 @@ class TerminalComponent extends Component<Props, State> {
   terminalContainerRef: any
   terminalResizerRef: any
   term: any
+  lastInputChar: any
 
   constructor (props: Props) {
     super(props)
@@ -134,14 +173,19 @@ class TerminalComponent extends Component<Props, State> {
   }
 
   componentWillReceiveProps (props: Props) {
-    const { text } = props
+    let { text, writable } = props
     if (text) {
       this.term.write(text)
+      this.lastInputChar = text
     }
+
+    this.term.setOption('cursorStyle', writable ? 'block' : 'underline')
+    this.term.setOption('cursorBlink', writable)
+    this.term.setOption('disableStdin', !writable)
   }
 
   componentDidMount () {
-    const { channel } = this.props
+    const { channel, writable } = this.props
     const { hostname } = this.state
 
     this.term = new Terminal({
@@ -150,16 +194,11 @@ class TerminalComponent extends Component<Props, State> {
       bellSound: '',
       convertEol: true,
       scrollback: 10000,
-      disableStdin: true,
-      cursorStyle: 'underline',
-      // cursorStyle: 'block',
-      cursorBlink: false,
-      // cursorBlink: true,
-      drawBoldTextInBrightColors: true
-    })
-
-    this.term.setOption('theme', {
-      fontFamily: '"Source Code Pro, Menlo, Monaco, Consolas, "Courier New", monospace'
+      cursorStyle: writable ? 'block' : 'underline',
+      cursorBlink: writable,
+      disableStdin: !writable,
+      drawBoldTextInBrightColors: true,
+      fontFamily: '"Source Code Pro", Menlo, Monaco, Consolas, "Courier New", monospace'
     })
 
     let termNode = this.terminalRef.current
@@ -170,7 +209,7 @@ class TerminalComponent extends Component<Props, State> {
     const termScrollArea = document.querySelector('.xterm-viewport') as HTMLElement
 
     let echoChannel = channel ? `echo \\#${channel}` : ''
-    let cmd = green(`exec > >(nc ${hostname} 1337) 2>&1;${echoChannel}`)
+    let cmd = green(`exec &> >(nc ${hostname} 1337);${echoChannel}`)
     this.term.writeln(`To get started, run in your terminal:\n\n${cmd}\n`)
 
     this.setupTerminalResizer()
@@ -179,8 +218,22 @@ class TerminalComponent extends Component<Props, State> {
       this.blurTerminal()
     })
 
+    const handleStdin = (data: string) => {
+      if (this.props.onData) {
+        this.lastInputChar = data
+        const ab = str2ab(data)
+        this.props.onData([ab, 'shell-stdin'])
+      }
+    }
+
+    this.term.on('data', (data: any) => {
+      handleStdin(data)
+    })
+
     this.term.on('key', (_, event) => {
-      if (event.keyCode === ESC_KEY) {
+      if (event.keyCode === ENTER_KEY) {
+        // handleStdin('\n')
+      } else if (event.keyCode === ESC_KEY) {
         this.blurTerminal()
 
         if (this.state.expandedView) {
@@ -243,18 +296,20 @@ class TerminalComponent extends Component<Props, State> {
     const { resizable } = this.props
 
     return (
-      <UI.TerminalContainer
-        ref={this.terminalContainerRef}
-        onClick={(event: any) => this.focusTerminal()}>
-        <UI.Terminal
-          id="terminal"
-          style={{
-            height: resizable ? '350px' : '100%'
-          }}
-          ref={this.terminalRef} />
-          {this.renderFooter()}
-          {this.renderResizer()}
-      </UI.TerminalContainer>
+      <UI.Container>
+        <UI.TerminalContainer
+          ref={this.terminalContainerRef}
+          onClick={(event: any) => this.focusTerminal()}>
+          <UI.Terminal
+            id="terminal"
+            style={{
+              height: resizable ? '350px' : '100%'
+            }}
+            ref={this.terminalRef} />
+        </UI.TerminalContainer>
+        {this.renderFooter()}
+        {this.renderResizer()}
+    </UI.Container>
     )
   }
 
@@ -268,56 +323,40 @@ class TerminalComponent extends Component<Props, State> {
       fullscreen
     } = this.state
 
+    const { writable } = this.props
+
     return (
       <UI.TerminalFooter className={(expandedView || fullscreen) ? 'fixed' : ''}>
-        <div
-          style={{
-            display: 'inline-block',
-            marginRight: 'auto'
-          }}>
-          <div
-            style={{
-              display: 'inline-block',
-              fontSize: '0.8rem',
-              opacity: '0.5',
-              marginRight: '1rem',
-              fontWeight: 700
-            }}>
-          READ-ONLY
-          </div>
-          <div style={{
-            display: 'inline-block',
-            fontSize: '0.8rem',
-            opacity: '0.5'
-          }}>{this.state.terminalPressedKey}</div>
-        </div>
-        {(terminalBlurred && terminalScrollable) && <div
-          style={{
-            display: 'inline-block',
-            marginRight: '1rem',
-            fontSize: '0.8rem',
-            opacity: '0.5'
-          }}>
+        <UI.TerminalFooterInner>
+          <UI.ReadWriteLabel
+            title={writable ? 'Click enable READ-ONLY' : 'Click to enable READ/WRITE'}
+            htmlFor="writable">
+            <Switch
+              checked={writable}
+              onChange={this.handleWritableChange}
+              color="primary"
+              name="writable"
+              id="writable"
+              inputProps={{ 'aria-label': 'writable' }}
+            />
+            {writable ? 'READ/WRITE' : 'READ-ONLY'}
+            <HelpTooltip
+              text="Streams by default are read-only. If the streamer made the stream writable using the --writable flag then clients can write to the streamer's TTY."
+              iconStyle={{
+                fontSize: '0.8rem',
+                marginLeft: '0.2rem'
+              }} />
+          </UI.ReadWriteLabel>
+          <UI.TerminalPressedKey>{this.state.terminalPressedKey}</UI.TerminalPressedKey>
+        </UI.TerminalFooterInner>
+        {(terminalBlurred && terminalScrollable) ? <UI.TerminalSmallHelperText>
           click to scroll terminal
-        </div>}
-        {!terminalBlurred && <div
-          style={{
-            display: 'inline-block',
-            marginRight: '1rem',
-            fontSize: '0.8rem',
-            opacity: '0.5'
-          }}>vim-shortcut keys enabled</div>}
-        {!terminalBlurred && <div
-          style={{
-            display: 'inline-block',
-            marginRight: '1rem',
-            fontSize: '0.8rem',
-            opacity: '0.5',
-            fontWeight: 700
-          }}>
+        </UI.TerminalSmallHelperText> : null}
+        {!terminalBlurred && !writable ? <UI.TerminalSmallHelperText>vim-shortcut keys enabled</UI.TerminalSmallHelperText> : null}
+        {!terminalBlurred ? <UI.TerminalSmallHelperText>
           ESC to focus out
-        </div>
-        }
+        </UI.TerminalSmallHelperText>
+        : null}
         {this.renderExpandViewButton()}
         {this.renderFullscreenButton()}
       </UI.TerminalFooter>
@@ -395,6 +434,12 @@ class TerminalComponent extends Component<Props, State> {
     )
   }
 
+  handleWritableChange = (event: any, enabled: boolean) => {
+    if (this.props.onWritable) {
+      this.props.onWritable(enabled)
+    }
+  }
+
   focusTerminal () {
     this.terminalRef.current.classList.remove('blur')
     this.term.focus()
@@ -404,6 +449,11 @@ class TerminalComponent extends Component<Props, State> {
   }
 
   blurTerminal () {
+    const { expandedView } = this.state
+    if (expandedView) {
+      return
+    }
+
     this.terminalRef.current.classList.add('blur')
     this.setState({
       terminalBlurred: true,
@@ -422,13 +472,14 @@ class TerminalComponent extends Component<Props, State> {
 
       let terminal = this.terminalRef.current
       await terminal.requestFullscreen()
+      this.focusTerminal()
 
       this.setState({
         fullscreen: true,
         lastHeight
       })
 
-      const cb = (event) => {
+      const cb = (event: any) => {
         if (!document.fullscreenElement) {
           this.exitExpandedView()
           this.setState({
@@ -463,6 +514,7 @@ class TerminalComponent extends Component<Props, State> {
     terminal.style.height = window.outerHeight - borderSize - offset + 'px'
     this.term.toggleFullScreen(true)
     this.term.fit()
+    this.focusTerminal()
     this.setState({
       expandedView: true,
       lastHeight
@@ -482,7 +534,7 @@ class TerminalComponent extends Component<Props, State> {
     })
   }
 
-  handleNavigationKeys (event) {
+  handleNavigationKeys (event: any) {
     if (!this.isTerminalBlurred()) {
       if (event.key === 'j' || event.key === 'ArrowDown') {
         this.terminalScrollDown()
@@ -514,8 +566,8 @@ class TerminalComponent extends Component<Props, State> {
     }
   }
 
-  handleKeyPressLog (event) {
-    if (event.keyCode !== 73) {
+  handleKeyPressLog (event: any) {
+    if (event.keyCode !== LETTER_I_KEY) {
       if (!this.isTerminalBlurred()) {
         this.setState({
           terminalPressedKey: `${event.ctrlKey ? 'ctrl-' : ''}${event.key}`
@@ -564,7 +616,7 @@ class TerminalComponent extends Component<Props, State> {
     this.term.fit()
   }, 20)
 
-  onTerminalResizer = (event) => {
+  onTerminalResizer = (event: any) => {
     if (event.offsetY < this.state.borderSize) {
       const pos = event.y
       document.addEventListener('mousemove', this.resizeTerminal, false)
@@ -611,7 +663,7 @@ class TerminalComponent extends Component<Props, State> {
     resizer.addEventListener('mousedown', this.onTerminalResizer, false)
     // resizer.addEventListener('touchend', this.onTerminalResizer, false)
 
-    document.addEventListener('mouseup', event => {
+    document.addEventListener('mouseup', (event: any) => {
       document.removeEventListener('mousemove', this.resizeTerminal, false)
     }, false)
 

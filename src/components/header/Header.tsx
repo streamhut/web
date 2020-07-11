@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
 import Tooltip from '@material-ui/core/Tooltip'
+import IconButton from '@material-ui/core/IconButton'
 import styled from 'styled-components'
 import ClipboardJS from 'clipboard'
+import LightModeIcon from 'mdi-material-ui/Brightness7'
+import DarkModeIcon from 'mdi-material-ui/Brightness4'
 
+import ThemeContext from 'src/themeContext'
 import Clipboard from 'src/components/functional/Clipboard'
 import HelpTooltip from 'src/components/functional/HelpTooltip'
 import MaxWidthContainer from 'src/components/functional/MaxWidthContainer'
@@ -14,10 +18,10 @@ const UI = {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    background: #efefef;
+    background: ${({ theme }) => (theme as any).headerBackground};
     box-shadow: 0 1px 10px rgba(151,164,175,.1);
     @media (max-width: 500px) {
-      flex-direction: column;
+      display: block;
     }
   `,
   HeaderGroup: styled.hgroup`
@@ -26,8 +30,7 @@ const UI = {
     justify-content: space-between;
     padding: 1rem;
     @media (max-width: 500px) {
-      flex-direction: column;
-      align-items: flex-start;
+      display: block;
     }
   `,
   Title: styled.h1`
@@ -38,12 +41,24 @@ const UI = {
     flex-direction: column;
     justify-content: center;
     @media (max-width: 500px) {
+      display: block;
       margin-bottom: 0.5rem;
       align-items: flex-start;
       .tooltip {
         display: none;
       }
     }
+  `,
+  LogoImage: styled.img`
+    width: 150px;
+    height: auto;
+    filter: ${({ theme }) => (theme as any).headerLogoFilter};
+  `,
+  LightModeIcon: styled(LightModeIcon)`
+    color: rgba(255, 255, 255, 0.8)
+  `,
+  DarkModeIcon: styled(DarkModeIcon)`
+    color: rgba(0, 0, 0, 0.8)
   `,
   UL: styled.ul`
     list-style: none;
@@ -64,7 +79,7 @@ const UI = {
       margin-right: 0.4rem;
       display: block;
       font-size: 0.7rem;
-      color: #000;
+      color: ${({ theme }) => (theme as any).headerColor};
       display: flex;
       align-items: center;
     }
@@ -80,20 +95,31 @@ const UI = {
     }
     @media (max-width: 500px) {
       margin-left: 0;
+      display: inline-block;
+      width: auto;
+      float: left;
     }
   `,
   ShareUrlInput: styled.input`
-    width: 180px;
-    margin-right: 0.5rem;
-    font-size: 0.7rem;
-    background: #fff;
+    &[type="text"] {
+      width: 180px;
+      margin-right: 0.5rem;
+      font-size: 0.7rem;
+      border-radius: 2px;
+      padding: 0.5rem;
+      border-width: 1px;
+      border-style: solid;
+      background: ${({ theme }) => (theme as any).inputBackground};
+      color: ${({ theme }) => (theme as any).inputColor};
+      border-color: ${({ theme }) => (theme as any).inputBorderColor};
+    }
     &:hover {
-      border-color: #ccc;
+      border-color: ${({ theme }) => (theme as any).inputBorderColorHover};
       cursor: pointer;
     }
     @media (max-width: 500px) {
-      width: 100%;
       max-width: 300px;
+      float: left;
     }
   `,
   Examples: styled.div`
@@ -101,7 +127,7 @@ const UI = {
     width: 100%;
     padding: 0.5rem 0.5rem 0.5rem 2rem;
     font-size: 0.8rem;
-    color: #000;
+    color: ${({ theme }) => (theme as any).headerColor};
     line-height: 1.4;
     label {
       display: inline-block;
@@ -110,6 +136,7 @@ const UI = {
       text-align: right;
       padding-right: 0.5rem;
       font-size: 0.8rem;
+      color: ${({ theme }) => (theme as any).headerColor};
       @media (max-width: 780px) {
         width: auto;
       }
@@ -143,7 +170,7 @@ const UI = {
       font-size: 1.2rem;
       cursor: pointer;
       margin-bottom: 0.5rem;
-      color: #000;
+      color: ${({ theme }) => (theme as any).headerColor};
       span {
         display: inline-block;
       }
@@ -163,11 +190,26 @@ const UI = {
       display: none;
     }
   `,
+  Settings: styled.div`
+    @media (max-width: 500px) {
+      float: left;
+    }
+  `,
   Notice: styled.div`
     font-size: 0.7rem;
-    background: #dededa;
+    background: ${({ theme }) => (theme as any).noticeBackground};
+    color: ${({ theme }) => (theme as any).noticeColor};
     padding: 0.1rem;
-}
+  `,
+  HelperText: styled.div`
+    font-size: 0.8rem;
+    color: ${({ theme }) => (theme as any).headerColor};
+  `,
+  TooltipListContainer: styled.div`
+    padding: 0.5rem;
+  `,
+  Clear: styled.div`
+    clear: both;
   `
 }
 
@@ -186,13 +228,13 @@ class Header extends Component<Props, State> {
   shareUrl: any
   copyHelpText: any
 
-  constructor (props) {
+  constructor (props: Props) {
     super(props)
 
     this.state = {
       hostname: streamHostname,
       port: streamPort,
-      showExampleWithChannel: false,
+      showExampleWithChannel: true,
       channel: window.location.pathname.substr(3)
     }
 
@@ -202,7 +244,7 @@ class Header extends Component<Props, State> {
 
   componentDidMount () {
     new ClipboardJS(this.shareUrl.current, {
-      text: trigger => {
+      text: (trigger: any) => {
         return this.shareUrl.current.value
       }
     })
@@ -211,7 +253,7 @@ class Header extends Component<Props, State> {
         const text = target.textContent
         target.textContent = 'copied!'
 
-        setTimeout(function () {
+        setTimeout(() => {
           target.textContent = text
         }, 3e3)
       })
@@ -225,7 +267,7 @@ class Header extends Component<Props, State> {
     (window as any).getSelection().selectAllChildren(event.currentTarget)
   }
 
-  toggleExampleWithChannel (event) {
+  toggleExampleWithChannel (event: any) {
     event.preventDefault(event)
     this.setState({
       showExampleWithChannel: !this.state.showExampleWithChannel
@@ -234,149 +276,140 @@ class Header extends Component<Props, State> {
 
   render () {
     return (
-      <UI.Header id="header">
-        <MaxWidthContainer>
-          <UI.HeaderGroup>
-            <UI.Title>
-              <a
-                href="/"
-                title="Home">
-                <img
-                  style={{
-                    width: '150px',
-                    height: 'auto'
-                  }}
-                  src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_color_300x65.png"
-                  alt="Streamhut" />
-              </a>
+      <ThemeContext.Consumer>
+        {theme =>
+        <UI.Header id="header">
+          <MaxWidthContainer>
+            <UI.HeaderGroup>
+              <UI.Title>
+                <a
+                  href="/"
+                  title="Home">
+                  <UI.LogoImage
+                    src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_color_300x65.png"
+                    alt="Streamhut" />
+                </a>
 
-              <Tooltip
-                className="tooltip"
-                title={
-                  <React.Fragment>
-                    <div style={{
-                      padding: '0.5rem'
-                    }}>
+                <Tooltip
+                  className="tooltip"
+                  title={
+                    <UI.TooltipListContainer>
                       <ul>
                         <li>Stream your terminal to anyone without installing anything.</li>
                         <li>Quickly share data and files between devices.</li>
                         <li>URL path names map to channels.</li>
                         <li>Anyone in the same channel can view what's streamed.</li>
                       </ul>
-                    </div>
-                  </React.Fragment>
-                }
-              >
-                <div style={{
-                  fontSize: '0.8rem'
-                }}>What is this?</div>
-              </Tooltip>
+                    </UI.TooltipListContainer>
+                  }
+                >
+                  <UI.HelperText>What is this?</UI.HelperText>
+                </Tooltip>
 
-            </UI.Title>
-            <UI.Channel>
-              <label>Channel URL
-                <HelpTooltip
-                  text="Share this URL with others to join and see your stream and messages"
-                  iconStyle={{
-                    fontSize: '0.6rem',
-                    marginLeft: '0.2rem'
-                  }} />
-                <small
-                  ref={this.copyHelpText}
-                >click to copy</small>
-              </label>
-              <UI.ShareUrlInput
-                style={{
-                  borderRadius: '2px',
-                  padding: '0.5rem',
-                  border: '1px solid #e0e0e0'
-                }}
-                type="text"
-                placeholder="share url"
-                readOnly={true}
-                ref={this.shareUrl}
-                value={this.props.shareUrl}
-                onClick={event => this.shareUrlHandler(event)} />
-              <Clipboard
-                clipboardText={this.props.shareUrl} />
-            </UI.Channel>
+              </UI.Title>
+              <UI.Channel>
+                <label>Channel URL
+                  <HelpTooltip
+                    text="Share this URL with others to join and see your stream and messages"
+                    iconStyle={{
+                      fontSize: '0.6rem',
+                      marginLeft: '0.2rem'
+                    }} />
+                  <small
+                    ref={this.copyHelpText}
+                  >click to copy</small>
+                </label>
+                <UI.ShareUrlInput
+                  type="text"
+                  placeholder="share url"
+                  readOnly={true}
+                  ref={this.shareUrl}
+                  value={this.props.shareUrl}
+                  onClick={event => this.shareUrlHandler(event)} />
+                <Clipboard
+                  clipboardText={this.props.shareUrl} />
+              </UI.Channel>
 
-            <UI.Examples>
-              <div>
-
-                <details className={this.state.showExampleWithChannel ? 'random' : ''}>
-                  <summary>
-                    <span>CLI examples</span>
-                    <div>
-                      <button
-                        className="link"
-                        onClick={event => this.toggleExampleWithChannel(event)}>
-                        {this.state.showExampleWithChannel ? 'using random channel' : 'using specific channel'}
-                      </button>
-                    </div>
-                  </summary>
-                  <UI.UL>
-                    <UI.LI>
-                      <label>Tail:</label>
-                      {this.state.showExampleWithChannel
-                        ? <code
-                          onClick={event => this.selectCode(event)}
-                        >nc {this.state.hostname} {this.state.port} &lt; &lt;(echo \#{this.state.channel}; tail -F data.log)</code>
-                        : <code
-                          onClick={event => this.selectCode(event)}
-                        >tail -F file.log | nc {this.state.hostname} {this.state.port}</code>}
-                    </UI.LI>
-                    <UI.LI>
-                      <label>Tee</label>
-                      {this.state.showExampleWithChannel
-                        ? <code
-                          onClick={event => this.selectCode(event)}
-                        >(echo \#{this.state.channel}; htop) | tee {'>'}(nc {this.state.hostname} {this.state.port})</code>
-                        : <code
-                          onClick={event => this.selectCode(event)}
-                        >(sleep 5; htop) | tee {'>'}(nc {this.state.hostname} {this.state.port})</code>}
-                    </UI.LI>
-                    <UI.LI>
-                      <label>Pipe shell:</label>
-                      {this.state.showExampleWithChannel
-                        ? <code
-                          onClick={event => this.selectCode(event)}
-                        >exec {'>'} {'>'}(nc {this.state.hostname} {this.state.port}) 2{'>'}&1;echo \#{this.state.channel}</code>
-                        : <code
-                          onClick={event => this.selectCode(event)}
-                        >exec {'>'} {'>'}(nc {this.state.hostname} {this.state.port}) 2{'>'}&1</code>}
-                    </UI.LI>
-                    {/*
-                    <UI.LI>Echo: <code>$ echo 'foo' | streamhut post -h streamhut.io -c mychannel</code></UI.LI>
-                    <UI.LI>File: <code>$ streamhut post -h streamhut.io -c mychannel -f data.txt</code></UI.LI>
-                    */}
-                  </UI.UL>
-                </details>
+              <UI.Examples>
                 <div>
-                  <a href="https://github.com/miguelmota/streamhut"
-                    target="_blank"
-                    rel="noopener noreferrer">Developer documentation</a>
-                  <span> | </span>
-                  <a
-                    href="https://github.com/miguelmota/streamhut/issues/1"
-                    target="_blank"
-                    rel="noopener noreferrer">Feedback</a>
+
+                  <details className={this.state.showExampleWithChannel ? 'random' : ''}>
+                    <summary>
+                      <span>CLI examples</span>
+                      <div>
+                        <button
+                          className="link"
+                          onClick={event => this.toggleExampleWithChannel(event)}>
+                          {this.state.showExampleWithChannel ? 'using random channel' : 'using specific channel'}
+                        </button>
+                      </div>
+                    </summary>
+                    <UI.UL>
+                      <UI.LI>
+                        <label>Tail:</label>
+                        {this.state.showExampleWithChannel
+                          ? <code
+                            onClick={event => this.selectCode(event)}
+                          >nc {this.state.hostname} {this.state.port} &lt; &lt;(echo \#{this.state.channel}; tail -F data.log)</code>
+                          : <code
+                            onClick={event => this.selectCode(event)}
+                          >tail -F file.log | nc {this.state.hostname} {this.state.port}</code>}
+                      </UI.LI>
+                      <UI.LI>
+                        <label>Tee</label>
+                        {this.state.showExampleWithChannel
+                          ? <code
+                            onClick={event => this.selectCode(event)}
+                          >(echo \#{this.state.channel}; htop) | tee {'>'}(nc {this.state.hostname} {this.state.port})</code>
+                          : <code
+                            onClick={event => this.selectCode(event)}
+                          >(sleep 5; htop) | tee {'>'}(nc {this.state.hostname} {this.state.port})</code>}
+                      </UI.LI>
+                      <UI.LI>
+                        <label>Pipe shell:</label>
+                        {this.state.showExampleWithChannel
+                          ? <code
+                            onClick={event => this.selectCode(event)}
+                          >exec {'>'} {'>'}(nc {this.state.hostname} {this.state.port}) 2{'>'}&1;echo \#{this.state.channel}</code>
+                          : <code
+                            onClick={event => this.selectCode(event)}
+                          >exec {'>'} {'>'}(nc {this.state.hostname} {this.state.port}) 2{'>'}&1</code>}
+                      </UI.LI>
+                    </UI.UL>
+                  </details>
+                  <div>
+                    <a href="https://github.com/miguelmota/streamhut"
+                      target="_blank"
+                      rel="noopener noreferrer">Developer documentation</a>
+                    <span> | </span>
+                    <a
+                      href="https://github.com/miguelmota/streamhut/issues/1"
+                      target="_blank"
+                      rel="noopener noreferrer">Feedback</a>
+                  </div>
                 </div>
-              </div>
-            </UI.Examples>
-          </UI.HeaderGroup>
-        </MaxWidthContainer>
-        <UI.Notice>
-          <MaxWidthContainer>
-            <strong>⚠️ Notice:</strong> streamhut is alpha quality and storage might be reset. Use at your risk. <a
-              href="/#subscribe"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="subscribe"
-            >Subscribe</a> to get news and updates.
+              </UI.Examples>
+              <UI.Settings>
+                <IconButton onClick={theme.toggle}>
+                  {theme.dark ? <UI.LightModeIcon /> : <UI.DarkModeIcon />}
+                </IconButton>
+              </UI.Settings>
+            <UI.Clear />
+            </UI.HeaderGroup>
           </MaxWidthContainer>
-        </UI.Notice>
-      </UI.Header>
+          <UI.Notice>
+            <MaxWidthContainer>
+              <strong>⚠️ Notice:</strong> streamhut is alpha quality and storage might be reset on streamhut.io. Use at your risk. <a
+                href="/#subscribe"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="subscribe"
+              >Subscribe</a> to get news and updates.
+            </MaxWidthContainer>
+          </UI.Notice>
+        </UI.Header>
+      }
+      </ThemeContext.Consumer>
     )
   }
 }

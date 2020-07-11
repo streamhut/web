@@ -9,13 +9,19 @@
 Install dependencies:
 
 ```bash
-yarn install
+npm install
 ```
 
-Start server:
+Start application:
 
 ```bash
-yarn start
+npm run dev
+```
+
+Build:
+
+```bash
+npm run build
 ```
 
 ## License

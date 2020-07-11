@@ -13,8 +13,7 @@ const UI = {
     width: 100%;
     font-size: 1rem;
     text-align: right;
-    background: rgb(0,0,0);
-    background: linear-gradient(90deg, rgba(0,0,0,1) 36%, rgba(32,48,56,1) 100%);
+    background: ${({ theme }) => (theme as any).footerBackground};
   `,
   Container: styled.footer`
     display: flex;
@@ -23,6 +22,11 @@ const UI = {
     @media (max-width: 500px) {
       flex-direction: column;
     }
+  `,
+  LogoImage: styled.img`
+    width: 100px;
+    margin-left: 0.4rem;
+    margin-bottom: 0.5rem;
   `,
   Copyright: styled.div`
     font-weight: bold;
@@ -64,12 +68,7 @@ class Footer extends Component {
           <UI.Container>
             <UI.Copyright>
               © {year} <a href="/">
-                <img
-                  style={{
-                    width: '100px',
-                    marginLeft: '0.4rem',
-                    marginBottom: '0.5rem'
-                  }}
+                <UI.LogoImage
                   src="https://s3.amazonaws.com/assets.streamhut.io/streamhut_white_300x65.png"
                   alt="Streamhut" />
               </a>
