@@ -8,6 +8,7 @@ import ArrowCollapse from 'mdi-material-ui/ArrowCollapse'
 import FullscreenExit from 'mdi-material-ui/FullscreenExit'
 import HelpTooltip from 'src/components/functional/HelpTooltip'
 import str2ab from 'string-to-arraybuffer'
+import screenfull from 'screenfull'
 import { Terminal } from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import * as termFullscreen from 'xterm/lib/addons/fullscreen/fullscreen'
@@ -471,7 +472,11 @@ class TerminalComponent extends Component<Props, State> {
       const lastHeight = container.clientHeight
 
       let terminal = this.terminalRef.current
-      await terminal.requestFullscreen()
+      if (!screenfull.isEnabled) {
+        throw new Error('Not supported')
+      }
+
+      screenfull.request(terminal)
       this.focusTerminal()
 
       this.setState({
@@ -497,9 +502,11 @@ class TerminalComponent extends Component<Props, State> {
   }
 
   exitFullscreen () {
-    if (document.exitFullscreen) {
-      document.exitFullscreen()
+    if (!screenfull.isEnabled) {
+      throw new Error('Not supported')
     }
+
+    screenfull.exit()
   }
 
   showExpandedView () {

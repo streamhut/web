@@ -98,6 +98,7 @@ const UI = {
       display: inline-block;
       width: auto;
       float: left;
+      min-width: 220px;
     }
   `,
   ShareUrlInput: styled.input`
@@ -192,7 +193,7 @@ const UI = {
   `,
   Settings: styled.div`
     @media (max-width: 500px) {
-      float: left;
+      float: right;
     }
   `,
   Notice: styled.div`
